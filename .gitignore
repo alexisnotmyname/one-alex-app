@@ -1,0 +1,54 @@
+# Android Studio
+/captures/
+/.externalNativeBuild
+/.cxx/
+.idea/caches/
+/.idea/libraries/
+/.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+!.idea/codeStyles/
+!.idea/copyright/
+!.idea/inspectionProfiles
+.idea/*
+*.iml
+
+# Gradle files
+.gradle/
+build/
+
+# Keystore files (for security reasons)
+*.jks
+
+# Android generated binaries
+*.apk
+*.ap_
+*.dex
+*.so
+*.o
+*.a
+
+# Proguard
+proguard/
+proguard-rules.pro
+
+# IntelliJ
+out/
+
+# Local configuration file (sdk path, keystore path, etc.)
+local.properties
+
+# Android/Build generated files
+app/build/
+*/build/
+
+# Log & Backup files
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Ignore DS_Store files on Mac
+**/.DS_Store
