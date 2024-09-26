@@ -7,6 +7,7 @@ interface TodoListRepository {
     val myTodoList: Flow<List<TodoEntity>>
     suspend fun add(todoEntity: TodoEntity)
     suspend fun update(todoEntity: TodoEntity)
+    suspend fun updateTodoItems(todos: List<TodoEntity>)
     suspend fun delete(todoEntity: TodoEntity)
 }
 
@@ -21,6 +22,10 @@ class TodoListRepositoryImpl @Inject constructor(
 
     override suspend fun update(todoEntity: TodoEntity) {
         todoListDao.updateTodo(todoEntity)
+    }
+
+    override suspend fun updateTodoItems(todos: List<TodoEntity>) {
+        todoListDao.updateTodoItems(todos)
     }
 
     override suspend fun delete(todoEntity: TodoEntity) {

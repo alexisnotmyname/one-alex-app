@@ -20,7 +20,7 @@ data class TodoEntity(
 
 @Dao
 interface TodoListDao {
-    @Query("SELECT * FROM todoentity ORDER BY isDone")
+    @Query("SELECT * FROM todoentity order by `isDone` ASC, `order` ASC")
     fun getAllTodoList(): Flow<List<TodoEntity>>
 
     @Insert
@@ -28,6 +28,9 @@ interface TodoListDao {
 
     @Update
     suspend fun updateTodo(todo: TodoEntity)
+
+    @Update
+    suspend fun updateTodoItems(todos: List<TodoEntity>)
 
     @Delete
     suspend fun deleteTodo(todo: TodoEntity)
