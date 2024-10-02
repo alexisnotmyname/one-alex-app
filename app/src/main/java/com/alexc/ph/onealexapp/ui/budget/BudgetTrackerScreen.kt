@@ -2,7 +2,7 @@ package com.alexc.ph.onealexapp.ui.budget
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.alexc.ph.onealexapp.ui.PageUnderConstructionScreen
+import com.alexc.ph.onealexapp.ui.components.PageUnderConstructionScreen
 
 @Composable
 fun BudgetTrackerScreen(modifier: Modifier = Modifier) {

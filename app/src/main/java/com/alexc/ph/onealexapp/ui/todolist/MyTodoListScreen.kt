@@ -70,6 +70,7 @@ fun MyTodoListScreen(
         modifier = modifier.fillMaxSize()
     ) {
         ToDoListHeader(
+            modifier = Modifier.fillMaxWidth(),
             dateToday = dateToday
         )
         Box(

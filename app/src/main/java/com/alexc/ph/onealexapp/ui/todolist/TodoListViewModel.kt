@@ -2,7 +2,7 @@ package com.alexc.ph.onealexapp.ui.todolist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alexc.ph.data.db.todolist.TodoEntity
+import com.alexc.ph.data.model.todolist.TodoEntity
 import com.alexc.ph.data.db.todolist.TodoListRepository
 import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Error
 import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Loading
@@ -64,19 +64,19 @@ class TodoListViewModel@Inject constructor(
     }
 
     fun reorderTodoList(draggedIndex: Int, targetIndex: Int) {
+        if(_todoList.value[draggedIndex].isDone) return
         val updatedList = _todoList.value.toMutableList().apply {
             val itemToMove = removeAt(draggedIndex)
             add(targetIndex, itemToMove)
         }.mapIndexed { index, todoItem ->
             todoItem.copy(order = index)
         }
-
         _todoList.value = updatedList
     }
 
     fun getCurrentDate(): String {
         val currentDate = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("MMM dd - EEE")
+        val formatter = DateTimeFormatter.ofPattern("MMM dd - EEEE")
         return currentDate.format(formatter)
     }
 }

@@ -1,4 +1,4 @@
-package com.alexc.ph.onealexapp.ui
+package com.alexc.ph.onealexapp.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -1,4 +1,4 @@
-package com.alexc.ph.data.db.todolist
+package com.alexc.ph.data.model.todolist
 
 import androidx.room.Dao
 import androidx.room.Delete
