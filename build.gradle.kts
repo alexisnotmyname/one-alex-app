@@ -7,5 +7,5 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.hilt.gradle) apply false
-
+    alias(libs.plugins.secrets) apply false
 }

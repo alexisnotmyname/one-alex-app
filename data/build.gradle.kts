@@ -4,9 +4,14 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.gradle)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
+    buildFeatures {
+        buildConfig = true
+    }
     namespace = "com.alexc.ph.data"
     compileSdk = 34
 
@@ -60,6 +65,13 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+
+    //Retrofit
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.okhttp.logging)
+    implementation (libs.retrofit.core)
+    implementation(libs.retrofit.kotlin.serialization)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
