@@ -20,6 +20,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
@@ -32,6 +36,7 @@ import com.alexc.ph.onealexapp.ui.components.OneAlexAppIcons
 import com.alexc.ph.onealexapp.ui.components.OneAlexTopAppBar
 import com.alexc.ph.onealexapp.ui.navigation.OneAlexNavHost
 import com.alexc.ph.onealexapp.ui.navigation.OneAlexNavigationSuiteScaffold
+import com.alexc.ph.onealexapp.ui.settings.SettingsDialog
 import kotlin.reflect.KClass
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,6 +47,19 @@ fun OneAlexApp(
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()
 ) {
     val currentDestination = appState.currentDestination
+    var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
+
+    if(showSettingsDialog) {
+        SettingsDialog(
+            onDismiss = {
+                showSettingsDialog = false
+            },
+            onButtonClicked = {
+                println("Button clicked")
+            }
+        )
+    }
+
     OneAlexNavigationSuiteScaffold(
         navigationSuiteItems = {
             appState.topLevelDestinations.forEach { destination ->
@@ -105,9 +123,7 @@ fun OneAlexApp(
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                             containerColor = Color.Transparent,
                         ),
-                        onActionClick = {
-                            Log.d("ALEX", "Navigate to Settings")
-                        },
+                        onActionClick = { showSettingsDialog = true },
                         onNavigationClick = {
                             Log.d("ALEX", "Navigate To Search")
                         },

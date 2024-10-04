@@ -36,21 +36,21 @@ import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
 @Composable
 fun MyTodoListScreen(
     modifier: Modifier = Modifier,
-    viewModel: TodoListViewModel = hiltViewModel()
+    todoViewModel: TodoListViewModel = hiltViewModel()
 ) {
-    val items by viewModel.uiState.collectAsStateWithLifecycle()
+    val items by todoViewModel.uiState.collectAsStateWithLifecycle()
     if (items is TodoListUiState.Success) {
         val todoList = (items as TodoListUiState.Success).todoList
-        val currentDate = viewModel.getCurrentDate()
+        val currentDate = todoViewModel.getCurrentDate()
         MyTodoListScreen(
             modifier = modifier,
             dateToday = currentDate,
             todoList = todoList,
-            onItemClick = viewModel::toggleTodo,
-            onItemDelete = viewModel::removeTodo,
-            onItemDragged = viewModel::reorderTodoList,
-            onItemDraggedEnd = viewModel::updateTodoList,
-            onAddButtonClick = viewModel::addTodo
+            onItemClick = todoViewModel::toggleTodo,
+            onItemDelete = todoViewModel::removeTodo,
+            onItemDragged = todoViewModel::reorderTodoList,
+            onItemDraggedEnd = todoViewModel::updateTodoList,
+            onAddButtonClick = todoViewModel::addTodo
         )
     }
 }
