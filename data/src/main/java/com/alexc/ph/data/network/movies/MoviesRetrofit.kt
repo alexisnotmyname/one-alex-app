@@ -1,5 +1,6 @@
 package com.alexc.ph.data.network.movies
 
+import com.alexc.ph.data.model.movies.Configuration
 import com.alexc.ph.data.model.movies.Movies
 import retrofit2.Response
 import retrofit2.http.GET
@@ -18,4 +19,7 @@ interface MoviesRetrofit {
         @Query("language") language: String,
         @Query("page") page: Int
     ): Response<Movies>
+
+    @GET("3/configuration")
+    suspend fun getConfiguration(): Response<Configuration>
 }

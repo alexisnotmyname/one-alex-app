@@ -1,37 +1,38 @@
 package com.alexc.ph.data.network.movies
 
+import com.alexc.ph.data.model.movies.Configuration
 import com.alexc.ph.data.model.movies.Movie
-import com.alexc.ph.data.util.OAResults
+import com.alexc.ph.data.model.movies.Movies
+import com.alexc.ph.data.util.Result
+import com.alexc.ph.data.util.result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 interface MoviesRepository {
-    suspend fun getNowPlaying(language: String, page: Int): Flow<OAResults<List<Movie>>>
-    suspend fun getPopular(language: String, page: Int): Flow<OAResults<List<Movie>>>
+    fun getNowPlaying(language: String, page: Int): Flow<Result<Movies>>
+    fun getPopular(language: String, page: Int): Flow<Result<Movies>>
+    fun getImageConfigurations(): Flow<Result<Configuration>>
 }
 
 class MoviesRepositoryImpl @Inject constructor(
     private val moviesRetrofit: MoviesRetrofit
 ) : MoviesRepository{
-    override suspend fun getNowPlaying(language: String, page: Int): Flow<OAResults<List<Movie>>> = flow {
-        emit(OAResults.Loading)
-        try{
-            val response = moviesRetrofit.getNowPlaying(language, page)
-            if(response.isSuccessful) {
-                response.body()?.let {
-                    emit(OAResults.Success(it.movies))
-                } ?: emit(OAResults.Error(Throwable("Response body is null")))
-            } else {
-                emit(OAResults.Error(Throwable("Error ${response.code()}: ${response.message()}")))
-            }
-        } catch (e: Exception) {
-            emit(OAResults.Error(e))
-        }
+    override fun getNowPlaying(language: String, page: Int): Flow<Result<Movies>> = flow {
+        emit(Result.Loading)
+        val result = result { moviesRetrofit.getNowPlaying(language, page) }
+        emit(result)
     }
 
-    override suspend fun getPopular(language: String, page: Int): Flow<OAResults<List<Movie>>>  = flow {
-
+    override fun getPopular(language: String, page: Int): Flow<Result<Movies>>  = flow {
+        emit(Result.Loading)
+        val result = result{ moviesRetrofit.getPopular(language, page) }
+        emit(result)
     }
 
+    override fun getImageConfigurations(): Flow<Result<Configuration>> = flow {
+        emit(Result.Loading)
+        val result = result { moviesRetrofit.getConfiguration() }
+        emit(result)
+    }
 }
