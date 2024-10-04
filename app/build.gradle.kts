@@ -88,6 +88,9 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.material3.adaptive.navigation.suite.android)
 
+    // Coil
+    implementation(libs.coil.kt.compose)
+
     // Serialization
     implementation(libs.kotlinx.serialization.json)
     // Tooling
