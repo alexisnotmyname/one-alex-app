@@ -34,7 +34,7 @@ import com.alexc.ph.onealexapp.ui.constants.LargeDp
 import com.alexc.ph.onealexapp.ui.constants.MediumDp
 import com.alexc.ph.onealexapp.ui.constants.TodoItemHeight
 import com.alexc.ph.onealexapp.ui.constants.TodoItemIconSize
-import com.alexc.ph.onealexapp.ui.theme.AppTypography
+import com.alexc.ph.onealexapp.ui.constants.TodoItemTitleTextStyle
 import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
 import com.alexc.ph.onealexapp.ui.theme.TodoItemBackgroundColor
 import com.alexc.ph.onealexapp.ui.theme.TodoItemIconColor
@@ -86,7 +86,7 @@ fun TodoItemUi(
             Text(
                 text = item.name,
                 modifier = Modifier.weight(1f),
-                style = AppTypography.labelMedium.copy(color = textColor),
+                style = TodoItemTitleTextStyle.copy(color = textColor),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 textDecoration = textDecoration
