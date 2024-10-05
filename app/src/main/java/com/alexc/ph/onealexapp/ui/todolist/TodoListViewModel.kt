@@ -37,7 +37,7 @@ class TodoListViewModel@Inject constructor(
         viewModelScope.launch {
             todoListRepository.myTodoList.collect{
                 _todoList.value = it.map { todoEntity ->
-                    TodoItem(id = todoEntity.id, name = todoEntity.title, isDone = todoEntity.isDone, order = todoEntity.order)
+                    todoEntity.toTodoItem()
                 }
             }
         }
@@ -48,18 +48,16 @@ class TodoListViewModel@Inject constructor(
         }
 
     fun toggleTodo(todo: TodoItem) = viewModelScope.launch {
-            todoListRepository.update(TodoEntity(id = todo.id, title = todo.name, isDone = !todo.isDone, order = todo.order))
+            val todoEntity = todo.toTodoEntity().copy(isDone = !todo.isDone)
+            todoListRepository.update(todoEntity)
         }
 
     fun removeTodo(todo: TodoItem) = viewModelScope.launch {
-            val todoItemEntity = TodoEntity(id = todo.id, title = todo.name, isDone = todo.isDone, order = todo.order)
-            todoListRepository.delete(todoItemEntity)
+            todoListRepository.delete(todo.toTodoEntity())
         }
 
     fun updateTodoList() = viewModelScope.launch {
-        val todoEntityList = _todoList.value.map {
-            TodoEntity(id = it.id, title = it.name, isDone = it.isDone, order = it.order)
-        }
+        val todoEntityList = _todoList.value.map { it.toTodoEntity() }
         todoListRepository.updateTodoItems(todoEntityList)
     }
 
@@ -87,6 +85,9 @@ data class TodoItem(
     val isDone: Boolean = false,
     val order: Int
 )
+
+fun TodoItem.toTodoEntity() = TodoEntity(id = id, title = name, isDone = isDone, order = order)
+fun TodoEntity.toTodoItem() = TodoItem(id = id, name = title, isDone = isDone, order = order)
 
 sealed interface TodoListUiState {
     object Loading : TodoListUiState

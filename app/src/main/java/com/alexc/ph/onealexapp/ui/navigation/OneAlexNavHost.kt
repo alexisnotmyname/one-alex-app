@@ -5,6 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.alexc.ph.onealexapp.ui.OneAlexAppState
 import com.alexc.ph.onealexapp.ui.budget.budgetTrackerScreen
+import com.alexc.ph.onealexapp.ui.movies.details.movieDetailsScreen
+import com.alexc.ph.onealexapp.ui.movies.details.navigateToMovieDetails
 import com.alexc.ph.onealexapp.ui.movies.moviesScreen
 import com.alexc.ph.onealexapp.ui.todolist.TodoListRoute
 import com.alexc.ph.onealexapp.ui.todolist.todoListScreen
@@ -20,8 +22,11 @@ fun OneAlexNavHost(
         startDestination = TodoListRoute,
         modifier = modifier
     ) {
-        todoListScreen(modifier)
-        budgetTrackerScreen(modifier)
-        moviesScreen(modifier)
+        todoListScreen()
+        budgetTrackerScreen()
+        moviesScreen(navigateToMovieDetails = {
+            navController.navigateToMovieDetails()
+        })
+        movieDetailsScreen()
     }
 }

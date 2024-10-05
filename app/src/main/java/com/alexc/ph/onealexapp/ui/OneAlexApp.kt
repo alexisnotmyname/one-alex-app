@@ -26,7 +26,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -81,8 +80,6 @@ fun OneAlexApp(
                     },
                     label = { Text(stringResource(destination.iconTextId)) },
                     modifier = Modifier
-                        .testTag("OneAlexNavItem")
-                        .then(Modifier),
                 )
             }
         },

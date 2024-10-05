@@ -1,6 +1,5 @@
 package com.alexc.ph.onealexapp.ui.budget
 
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -12,9 +11,9 @@ import kotlinx.serialization.Serializable
 fun NavController.navigateToBudgetTracker(navOptions: NavOptions) =
     navigate(route = BudgetTrackerRoute, navOptions)
 
-fun NavGraphBuilder.budgetTrackerScreen(modifier: Modifier = Modifier) {
+fun NavGraphBuilder.budgetTrackerScreen() {
     composable<BudgetTrackerRoute> {
-        BudgetTrackerScreen(modifier = modifier)
+        BudgetTrackerScreen()
     }
 
 }

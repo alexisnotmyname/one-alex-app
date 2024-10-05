@@ -7,24 +7,18 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,7 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,38 +42,49 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.alexc.ph.data.model.movies.Movie
 import com.alexc.ph.onealexapp.R
+import com.alexc.ph.onealexapp.ui.constants.MediumDp
+import com.alexc.ph.onealexapp.ui.constants.MovieTitleTextStyle
+import com.alexc.ph.onealexapp.ui.constants.SmallDp
 import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
+import com.alexc.ph.onealexapp.ui.theme.shapes
 
 @Composable
 fun MoviesScreen(
     modifier: Modifier = Modifier,
-    moviesMoviesViewModel: MoviesViewModel = hiltViewModel()
+    moviesMoviesViewModel: MoviesViewModel = hiltViewModel(),
+    navigateToMovieDetails: (Movie) -> Unit = {}
 ) {
     val moviesState by moviesMoviesViewModel.moviesUiState.collectAsStateWithLifecycle()
     if (moviesState is MoviesUiState.Success) {
         val movies = (moviesState as MoviesUiState.Success).movies
-        MovieScreen(
+        PopularMovies(
             modifier = modifier,
-            movies = movies
+            movies = movies,
+            navigateToMovieDetails = navigateToMovieDetails
         )
     }
 }
 
 @Composable
-fun MovieScreen(
+fun PopularMovies(
     modifier: Modifier = Modifier,
-    movies: List<Movie>
+    movies: List<Movie>,
+    navigateToMovieDetails: (Movie) -> Unit = {}
 ) {
     LazyHorizontalGrid(
         rows = GridCells.Fixed(2),
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = modifier.fillMaxSize()
+        contentPadding = PaddingValues(horizontal = MediumDp),
+        horizontalArrangement = Arrangement.spacedBy(MediumDp),
+        verticalArrangement = Arrangement.spacedBy(MediumDp),
+        modifier = modifier.height(380.dp)
     ) {
-        items(movies) { movie ->
+        items(items = movies, key = {it.id}) { movie ->
             MovieItem(
-                modifier = Modifier.height(160.dp),
+                modifier = Modifier
+                    .height(160.dp)
+                    .clickable {
+                        navigateToMovieDetails(movie)
+                    },
                 imageUrl = movie.posterPath,
                 title = movie.title,
             )
@@ -93,10 +98,8 @@ fun MovieItem(
     imageUrl: String,
     title: String,
 ) {
-    println("movie item: $title \n$imageUrl")
     Column (
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier
     ) {
         Box(
             modifier = Modifier
@@ -106,14 +109,19 @@ fun MovieItem(
             MovieImage(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(MaterialTheme.shapes.medium),
+                    .clip(shapes.medium),
                 movieImageUrl = imageUrl,
                 contentDescription = title,
             )
         }
         Text(
             text = title,
-            textAlign = TextAlign.Center
+            style = MovieTitleTextStyle,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .padding(top = SmallDp)
+                .align(Alignment.CenterHorizontally)
         )
     }
 }
@@ -129,7 +137,7 @@ fun MovieImage(
     var imagePainterState by remember {
         mutableStateOf<AsyncImagePainter.State>(AsyncImagePainter.State.Empty)
     }
-//    println(movieImageUrl)
+
     val imageLoader = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
             .data(movieImageUrl)
@@ -141,7 +149,7 @@ fun MovieImage(
 
     val infiniteTransition = rememberInfiniteTransition(label = "infinite loading")
     val alpha by infiniteTransition.animateFloat(
-        initialValue = 0f,
+        initialValue = 1f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
             animation = keyframes {
@@ -202,7 +210,7 @@ fun MovieScreenPreview() {
             Movie(id = 6, title = "Dummy Title 7"),
             Movie(id = 7, title = "Dummy Title 8"),
         )
-        MovieScreen(
+        PopularMovies(
             movies = movies
         )
     }

@@ -1,6 +1,5 @@
 package com.alexc.ph.onealexapp.ui.todolist
 
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -12,8 +11,8 @@ import kotlinx.serialization.Serializable
 fun NavController.navigateToTodoList(navOptions: NavOptions) =
     navigate(route = TodoListRoute, navOptions)
 
-fun NavGraphBuilder.todoListScreen(modifier: Modifier = Modifier) {
+fun NavGraphBuilder.todoListScreen() {
     composable<TodoListRoute> {
-        MyTodoListScreen(modifier = modifier)
+        MyTodoListScreen()
     }
 }
