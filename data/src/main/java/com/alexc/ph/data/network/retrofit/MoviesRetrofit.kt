@@ -1,7 +1,7 @@
-package com.alexc.ph.data.network.movies
+package com.alexc.ph.data.network.retrofit
 
-import com.alexc.ph.data.model.movies.Configuration
-import com.alexc.ph.data.model.movies.Movies
+import com.alexc.ph.data.network.model.Configuration
+import com.alexc.ph.data.network.model.MoviesResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -12,13 +12,13 @@ interface MoviesRetrofit {
     suspend fun getNowPlaying(
         @Query("language") language: String,
         @Query("page") page: Int
-    ): Response<Movies>
+    ): Response<MoviesResponse>
 
     @GET("3/movie/popular")
     suspend fun getPopular(
         @Query("language") language: String,
         @Query("page") page: Int
-    ): Response<Movies>
+    ): Response<MoviesResponse>
 
     @GET("3/configuration")
     suspend fun getConfiguration(): Response<Configuration>

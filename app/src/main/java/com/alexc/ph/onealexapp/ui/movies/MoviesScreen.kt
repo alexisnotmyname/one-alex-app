@@ -40,7 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.alexc.ph.data.model.movies.Movie
+import com.alexc.ph.domain.model.Movies.Movie
 import com.alexc.ph.onealexapp.R
 import com.alexc.ph.onealexapp.ui.constants.MediumDp
 import com.alexc.ph.onealexapp.ui.constants.MovieTitleTextStyle

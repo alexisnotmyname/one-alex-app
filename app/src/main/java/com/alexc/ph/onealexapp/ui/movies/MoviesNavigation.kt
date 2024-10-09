@@ -4,7 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.alexc.ph.data.model.movies.Movie
+import com.alexc.ph.domain.model.Movies.Movie
 import kotlinx.serialization.Serializable
 
 @Serializable data object MoviesRoute

@@ -2,8 +2,8 @@ package com.alexc.ph.onealexapp.ui.todolist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alexc.ph.data.model.todolist.TodoEntity
-import com.alexc.ph.data.db.todolist.TodoListRepository
+import com.alexc.ph.data.db.model.TodoEntity
+import com.alexc.ph.data.db.repository.TodoListRepository
 import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Error
 import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Loading
 import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Success

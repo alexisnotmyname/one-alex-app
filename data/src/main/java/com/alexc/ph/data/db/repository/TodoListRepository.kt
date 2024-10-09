@@ -1,7 +1,7 @@
-package com.alexc.ph.data.db.todolist
+package com.alexc.ph.data.db.repository
 
-import com.alexc.ph.data.model.todolist.TodoEntity
-import com.alexc.ph.data.model.todolist.TodoListDao
+import com.alexc.ph.data.db.dao.TodoListDao
+import com.alexc.ph.data.db.model.TodoEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

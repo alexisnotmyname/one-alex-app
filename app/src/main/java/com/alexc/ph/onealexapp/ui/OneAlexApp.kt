@@ -1,6 +1,9 @@
 package com.alexc.ph.onealexapp.ui
 
+import android.Manifest
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -33,9 +36,15 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import com.alexc.ph.onealexapp.R
 import com.alexc.ph.onealexapp.ui.components.OneAlexAppIcons
 import com.alexc.ph.onealexapp.ui.components.OneAlexTopAppBar
+import com.alexc.ph.onealexapp.ui.components.PermissionDialog
+import com.alexc.ph.onealexapp.ui.components.RationaleDialog
 import com.alexc.ph.onealexapp.ui.navigation.OneAlexNavHost
 import com.alexc.ph.onealexapp.ui.navigation.OneAlexNavigationSuiteScaffold
 import com.alexc.ph.onealexapp.ui.settings.SettingsDialog
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import kotlin.reflect.KClass
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,6 +54,10 @@ fun OneAlexApp(
     appState: OneAlexAppState,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()
 ) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        RequestNotificationPermissionDialog()
+    }
+
     val currentDestination = appState.currentDestination
     var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -144,6 +157,18 @@ fun OneAlexApp(
                 //  content doesn't display behind it.
             }
         }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun RequestNotificationPermissionDialog() {
+    val permissionState = rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+
+    if (!permissionState.status.isGranted) {
+        if (permissionState.status.shouldShowRationale) RationaleDialog()
+        else PermissionDialog { permissionState.launchPermissionRequest() }
     }
 }
 

@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.hilt.gradle)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -57,6 +58,7 @@ android {
 dependencies {
 
     implementation(project(":data"))
+    implementation(project(":domain"))
 
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
@@ -93,6 +95,13 @@ dependencies {
 
     // Serialization
     implementation(libs.kotlinx.serialization.json)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging.ktx)
+    implementation(libs.accompanist.permissions)
+
+
     // Tooling
     debugImplementation(libs.androidx.ui.tooling)
     // Instrumented tests

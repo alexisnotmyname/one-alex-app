@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "One Alex App"
 include(":app")
 include(":data")
+include(":domain")

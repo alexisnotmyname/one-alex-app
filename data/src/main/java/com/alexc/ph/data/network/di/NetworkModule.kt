@@ -1,7 +1,7 @@
 package com.alexc.ph.data.network.di
 
 import com.alexc.ph.data.BuildConfig
-import com.alexc.ph.data.network.movies.MoviesRetrofit
+import com.alexc.ph.data.network.retrofit.MoviesRetrofit
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides

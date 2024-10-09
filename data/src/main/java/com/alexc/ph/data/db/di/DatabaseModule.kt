@@ -3,7 +3,7 @@ package com.alexc.ph.data.db.di
 import android.content.Context
 import androidx.room.Room
 import com.alexc.ph.data.db.OneAlexDatabase
-import com.alexc.ph.data.model.todolist.TodoListDao
+import com.alexc.ph.data.db.dao.TodoListDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

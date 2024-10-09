@@ -2,32 +2,29 @@ package com.alexc.ph.onealexapp.ui.movies
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alexc.ph.data.model.movies.Movie
-import com.alexc.ph.data.network.movies.MoviesRepository
-import com.alexc.ph.data.util.Result
+import com.alexc.ph.data.network.util.Result
+import com.alexc.ph.domain.GetPopularMoviesUseCase
+import com.alexc.ph.domain.model.Movies.Movie
 import com.alexc.ph.onealexapp.ui.movies.MoviesUiState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
-    private val moviesRepository: MoviesRepository
+    getPopularMoviesUseCase: GetPopularMoviesUseCase
 ): ViewModel() {
 
     private var _configurations = MutableStateFlow<Configuration?>(null)
 
     val moviesUiState: StateFlow<MoviesUiState> = moviesUiState(
-        moviesRepository,
+        getPopularMoviesUseCase,
         _configurations.value
     )
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), Loading)
@@ -64,10 +61,10 @@ class MoviesViewModel @Inject constructor(
 }
 
 private fun moviesUiState(
-    moviesRepository: MoviesRepository,
+    getPopularMoviesUseCase: GetPopularMoviesUseCase,
     configuration: Configuration?
 ): Flow<MoviesUiState> {
-    return moviesRepository.getPopular("en-US", 1)
+    return getPopularMoviesUseCase("en-US", 1)
         .map { result ->
             when(result) {
                 is Result.Loading -> Loading
