@@ -25,7 +25,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    OneAlexApp(modifier = Modifier.padding(SmallDp), appState = appState)
+                    OneAlexApp(
+                        modifier = Modifier
+                            .padding(SmallDp),
+                        appState = appState)
                 }
             }
         }

@@ -10,7 +10,7 @@ import com.alexc.ph.onealexapp.ui.theme.surfaceVariantDark
 
 val MovieTitleTextStyle = TextStyle(
     fontWeight = FontWeight.Normal,
-    fontSize = 12.sp,
+    fontSize = 14.sp,
     letterSpacing = 0.5.sp,
     color = TodoItemTextColor
 )

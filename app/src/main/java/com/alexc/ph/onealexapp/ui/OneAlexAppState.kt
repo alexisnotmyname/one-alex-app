@@ -19,23 +19,19 @@ import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun rememberOneAlexAppState(
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
 ): OneAlexAppState {
     return remember(
         navController,
-        coroutineScope
     ) {
         OneAlexAppState(
-            navController = navController,
-            coroutineScope = coroutineScope
+            navController = navController
         )
     }
 }
 
 class OneAlexAppState(
     val navController: NavHostController,
-    coroutineScope: CoroutineScope
 ) {
     val currentDestination: NavDestination?
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination
