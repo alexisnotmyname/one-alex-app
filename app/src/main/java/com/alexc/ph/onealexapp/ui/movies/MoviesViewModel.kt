@@ -3,8 +3,11 @@ package com.alexc.ph.onealexapp.ui.movies
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexc.ph.data.network.util.Result
-import com.alexc.ph.domain.GetPopularMoviesUseCase
-import com.alexc.ph.domain.model.Movies.Movie
+import com.alexc.ph.domain.GetMoviesUseCase
+import com.alexc.ph.domain.model.CombinedMovies
+import com.alexc.ph.domain.model.Configuration
+import com.alexc.ph.domain.model.Movies
+import com.alexc.ph.domain.model.Movies.*
 import com.alexc.ph.onealexapp.ui.movies.MoviesUiState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -18,13 +21,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
-    getPopularMoviesUseCase: GetPopularMoviesUseCase
+    getMoviesUseCase: GetMoviesUseCase
 ): ViewModel() {
 
     private var _configurations = MutableStateFlow<Configuration?>(null)
 
     val moviesUiState: StateFlow<MoviesUiState> = moviesUiState(
-        getPopularMoviesUseCase,
+        getMoviesUseCase,
         _configurations.value
     )
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), Loading)
@@ -61,31 +64,34 @@ class MoviesViewModel @Inject constructor(
 }
 
 private fun moviesUiState(
-    getPopularMoviesUseCase: GetPopularMoviesUseCase,
+    getMoviesUseCase: GetMoviesUseCase,
     configuration: Configuration?
 ): Flow<MoviesUiState> {
-    return getPopularMoviesUseCase("en-US", 1)
+    return getMoviesUseCase("en-US", 1)
         .map { result ->
             when(result) {
                 is Result.Loading -> Loading
                 is Result.Success -> {
                     val baseUrl = configuration?.baseUrl ?: "https://image.tmdb.org/t/p/"
                     val size = configuration?.imageSize ?: "original"
-                    val data = result.data.movies.map {
+                    val popular = result.data.popular.map {
                         it.copy(posterPath = baseUrl+size+it.posterPath)
                     }
-                    Success(data)
+                    val nowPlaying = result.data.nowPlaying.map {
+                        it.copy(posterPath = baseUrl+size+it.posterPath)
+                    }
+                    Success(movies = CombinedMovies(nowPlaying = nowPlaying, popular = popular))
                 }
                 is Result.Error -> Error(result.exception)
             }
         }
 }
 
-data class Configuration(val baseUrl: String, val imageSize: String)
-
 sealed interface MoviesUiState {
     object Idle: MoviesUiState
     object Loading : MoviesUiState
     data class Error(val throwable: Throwable) : MoviesUiState
-    data class Success(val movies: List<Movie>) : MoviesUiState
+    data class Success(
+        val movies: CombinedMovies
+    ) : MoviesUiState
 }

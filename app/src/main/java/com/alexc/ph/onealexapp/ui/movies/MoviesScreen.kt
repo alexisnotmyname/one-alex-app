@@ -12,13 +12,24 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,6 +52,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.alexc.ph.domain.model.CombinedMovies
 import com.alexc.ph.domain.model.Movies.Movie
 import com.alexc.ph.onealexapp.R
 import com.alexc.ph.onealexapp.ui.constants.MediumDp
@@ -57,12 +70,36 @@ fun MoviesScreen(
     val moviesState by moviesMoviesViewModel.moviesUiState.collectAsStateWithLifecycle()
     if (moviesState is MoviesUiState.Success) {
         val movies = (moviesState as MoviesUiState.Success).movies
-        PopularMovies(
-            modifier = modifier,
+
+        MoviesScreen(
+            modifier = modifier.fillMaxWidth(),
             movies = movies,
             navigateToMovieDetails = navigateToMovieDetails
         )
     }
+}
+
+@Composable
+fun MoviesScreen(
+    modifier: Modifier = Modifier,
+    movies: CombinedMovies,
+    navigateToMovieDetails: (Movie) -> Unit = {}
+) {
+    Column (
+        modifier.fillMaxSize()
+    ){
+        MovieRow(
+            modifier = modifier,
+            movies = movies.nowPlaying,
+            navigateToMovieDetails = navigateToMovieDetails
+        )
+        MovieRow(
+            modifier = modifier,
+            movies = movies.popular,
+            navigateToMovieDetails = navigateToMovieDetails
+        )
+    }
+
 }
 
 @Composable
@@ -76,12 +113,77 @@ fun PopularMovies(
         contentPadding = PaddingValues(horizontal = MediumDp),
         horizontalArrangement = Arrangement.spacedBy(MediumDp),
         verticalArrangement = Arrangement.spacedBy(MediumDp),
-        modifier = modifier.height(380.dp)
+        modifier = modifier
     ) {
-        items(items = movies, key = {it.id}) { movie ->
+        movies(
+            movies = movies,
+            navigateToMovieDetails = navigateToMovieDetails
+        )
+    }
+}
+
+@Composable
+fun NowPlayingMovies(
+    modifier: Modifier = Modifier,
+    movies: List<Movie>,
+    navigateToMovieDetails: (Movie) -> Unit = {}
+) {
+    LazyHorizontalGrid(
+        rows = GridCells.Fixed(2),
+        contentPadding = PaddingValues(horizontal = MediumDp),
+        horizontalArrangement = Arrangement.spacedBy(MediumDp),
+        verticalArrangement = Arrangement.spacedBy(MediumDp),
+        modifier = modifier
+    ) {
+        movies(
+            movies = movies,
+            navigateToMovieDetails = navigateToMovieDetails
+        )
+    }
+}
+
+fun LazyGridScope.movies(
+    movies: List<Movie>,
+    navigateToMovieDetails: (Movie) -> Unit = {}
+) {
+    items(items = movies, key = {it.id}) { movie ->
+        MovieItem(
+            modifier = Modifier
+                .width(MOVIE_IMAGE_SIZE_DP)
+                .clickable {
+                    navigateToMovieDetails(movie)
+                },
+            imageUrl = movie.posterPath,
+            title = movie.title,
+        )
+    }
+}
+
+private val MOVIE_IMAGE_SIZE_DP = 160.dp
+
+@Composable
+fun MovieRow(
+    modifier: Modifier = Modifier,
+    movies: List<Movie>,
+    navigateToMovieDetails: (Movie) -> Unit = {}
+) {
+    LazyRow(
+        modifier = modifier,
+        contentPadding = PaddingValues(
+            start = 16.dp,
+            top = 8.dp,
+            end = 16.dp,
+            bottom = 24.dp
+        ),
+        horizontalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        items(
+            items = movies,
+            key = { it.id }
+        ) { movie ->
             MovieItem(
                 modifier = Modifier
-                    .height(160.dp)
+                    .width(MOVIE_IMAGE_SIZE_DP)
                     .clickable {
                         navigateToMovieDetails(movie)
                     },
@@ -99,11 +201,12 @@ fun MovieItem(
     title: String,
 ) {
     Column (
-        modifier = modifier
+        modifier.semantics(mergeDescendants = true) {}
     ) {
         Box(
             modifier = Modifier
-                .size(160.dp)
+                .fillMaxWidth()
+                .aspectRatio(1f)
                 .align(Alignment.CenterHorizontally)
         ) {
             MovieImage(
@@ -117,10 +220,10 @@ fun MovieItem(
         Text(
             text = title,
             style = MovieTitleTextStyle,
-            maxLines = 1,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
-                .padding(top = SmallDp)
+                .padding(top = MediumDp)
                 .align(Alignment.CenterHorizontally)
         )
     }
@@ -204,14 +307,11 @@ fun MovieScreenPreview() {
             Movie(id = 0, title = "Dummy Title 1"),
             Movie(id = 1, title = "Dummy Title 2"),
             Movie(id = 2, title = "Dummy Title 3"),
-            Movie(id = 3, title = "Dummy Title 4"),
-            Movie(id = 4, title = "Dummy Title 5"),
-            Movie(id = 5, title = "Dummy Title 6"),
-            Movie(id = 6, title = "Dummy Title 7"),
-            Movie(id = 7, title = "Dummy Title 8"),
+            Movie(id = 3, title = "Dummy Title 4")
         )
-        PopularMovies(
-            movies = movies
+        val combinedMovies = CombinedMovies(movies, movies)
+        MoviesScreen(
+            movies = combinedMovies
         )
     }
 }
@@ -226,3 +326,14 @@ fun MovieItemPreview() {
         )
     }
 }
+
+fun LazyGridScope.fullWidthItem(
+    key: Any? = null,
+    contentType: Any? = null,
+    content: @Composable LazyGridItemScope.() -> Unit
+) = item(
+    span = { GridItemSpan(this.maxLineSpan) },
+    key = key,
+    contentType = contentType,
+    content = content
+)

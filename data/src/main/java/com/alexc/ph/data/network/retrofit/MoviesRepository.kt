@@ -23,7 +23,7 @@ class MoviesRepositoryImpl @Inject constructor(
         emit(result)
     }
 
-    override fun getPopular(language: String, page: Int): Flow<Result<MoviesResponse>>  = flow {
+    override fun getPopular(language: String, page: Int): Flow<Result<MoviesResponse>> = flow {
         emit(Result.Loading)
         val result = result { moviesRetrofit.getPopular(language, page) }
         emit(result)
