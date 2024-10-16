@@ -20,6 +20,7 @@ hilt = "2.52"
 ksp = "2.0.20-1.0.24"
 kotlinxSerializationJson = "1.6.3"
 androidxRoom = "2.6.1"
+pagingRuntimeKtx = "3.3.2"
 retrofitVersion = "2.11.0"
 retrofitKotlinxSerializationJson = "1.0.0"
 okhttp = "4.12.0"
@@ -29,6 +30,8 @@ coil = "2.7.0"
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingRuntimeKtx" }
+androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagingRuntimeKtx" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

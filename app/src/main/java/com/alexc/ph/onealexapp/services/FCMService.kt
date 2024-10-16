@@ -52,7 +52,7 @@ class FCMService: FirebaseMessagingService() {
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setContentTitle(message.title)
             .setContentText(message.body)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.mipmap.ic_onealex)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
 

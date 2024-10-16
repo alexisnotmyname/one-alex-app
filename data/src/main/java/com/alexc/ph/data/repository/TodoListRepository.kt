@@ -1,4 +1,4 @@
-package com.alexc.ph.data.db.repository
+package com.alexc.ph.data.repository
 
 import com.alexc.ph.data.db.dao.TodoListDao
 import com.alexc.ph.data.db.model.TodoEntity

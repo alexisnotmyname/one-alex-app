@@ -1,9 +1,10 @@
 package com.alexc.ph.domain
 
-import com.alexc.ph.data.network.retrofit.MoviesRepository
-import com.alexc.ph.data.network.util.Result
-import com.alexc.ph.domain.model.Movies
-import com.alexc.ph.domain.model.toMoviesDomain
+import androidx.paging.PagingData
+import androidx.paging.map
+import com.alexc.ph.data.repository.MoviesRepository
+import com.alexc.ph.domain.model.Movie
+import com.alexc.ph.domain.model.toMovie
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -11,14 +12,9 @@ import javax.inject.Inject
 class GetPopularMoviesUseCase @Inject constructor(
     private val moviesRepository: MoviesRepository
 ) {
-
-    operator fun invoke(language: String, page: Int): Flow<Result<Movies>> {
-        return moviesRepository.getPopular(language, page).map { result ->
-            when(result) {
-                is Result.Loading -> Result.Loading
-                is Result.Success -> Result.Success(result.data.toMoviesDomain())
-                is Result.Error -> Result.Error(result.exception)
-            }
+    operator fun invoke(): Flow<PagingData<Movie>> {
+        return moviesRepository.getPopularPaged().map { movies ->
+            movies.map { it.toMovie() }
         }
     }
 }

@@ -2,7 +2,6 @@ package com.alexc.ph.onealexapp.ui
 
 import android.Manifest
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -133,8 +132,7 @@ fun OneAlexApp(
                             containerColor = Color.Transparent,
                         ),
                         onActionClick = { showSettingsDialog = true },
-                        onNavigationClick = {
-                            Log.d("ALEX", "Navigate To Search w/ $destination")
+                        onNavigationClick = { // TODO add search
                         },
                     )
                 }
@@ -148,7 +146,13 @@ fun OneAlexApp(
                         },
                     ),
                 ) {
-                    OneAlexNavHost(appState = appState)
+                    OneAlexNavHost(
+                        appState = appState,
+                        navigateToMovieDetails = appState::navigateToMovieDetails,
+                        navigateToPagedList = appState::navigateToPagedList,
+                        navigateBack = appState::navigateBack,
+                        onWatchClick = appState::watch,
+                    )
                 }
             }
         }

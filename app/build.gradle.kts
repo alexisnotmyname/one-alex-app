@@ -89,6 +89,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.material3.adaptive.navigation.suite.android)
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.paging.compose)
 
     // Coil
     implementation(libs.coil.kt.compose)

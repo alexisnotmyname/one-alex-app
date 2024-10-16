@@ -1,9 +1,11 @@
 package com.alexc.ph.onealexapp.ui.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
 import androidx.compose.material.icons.outlined.Checklist
 import androidx.compose.material.icons.outlined.LiveTv
 import androidx.compose.material.icons.outlined.Savings
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Checklist
 import androidx.compose.material.icons.rounded.LiveTv
 import androidx.compose.material.icons.rounded.Savings
@@ -19,4 +21,6 @@ object OneAlexAppIcons {
     val LiveTvBorder = Icons.Outlined.LiveTv
     val Search = Icons.Rounded.Search
     val Settings = Icons.Rounded.Settings
+    val Back = Icons.Rounded.ArrowBackIosNew
+    val Forward =  Icons.AutoMirrored.Rounded.ArrowForwardIos
 }

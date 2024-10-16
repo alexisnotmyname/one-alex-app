@@ -1,63 +1,60 @@
 package com.alexc.ph.onealexapp.ui.movies
 
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.alexc.ph.domain.model.BaseContent
+import com.alexc.ph.domain.model.Category
 import com.alexc.ph.domain.model.CombinedMovies
-import com.alexc.ph.domain.model.Movies.Movie
+import com.alexc.ph.domain.model.CombinedMoviesAndSeries
+import com.alexc.ph.domain.model.CombinedTvSeries
+import com.alexc.ph.domain.model.Movie
+import com.alexc.ph.domain.model.TvSeries
 import com.alexc.ph.onealexapp.R
+import com.alexc.ph.onealexapp.ui.components.ContentImage
+import com.alexc.ph.onealexapp.ui.components.GenericErrorScreen
+import com.alexc.ph.onealexapp.ui.components.LoadingScreen
+import com.alexc.ph.onealexapp.ui.components.OneAlexAppIcons.Forward
+import com.alexc.ph.onealexapp.ui.constants.LargeDp
+import com.alexc.ph.onealexapp.ui.constants.MOVIE_IMAGE_SIZE_DP
 import com.alexc.ph.onealexapp.ui.constants.MediumDp
-import com.alexc.ph.onealexapp.ui.constants.MovieTitleTextStyle
+import com.alexc.ph.onealexapp.ui.constants.MovieHeaderTextStyle
 import com.alexc.ph.onealexapp.ui.constants.SmallDp
+import com.alexc.ph.onealexapp.ui.constants.XLargeDp
 import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
 import com.alexc.ph.onealexapp.ui.theme.shapes
 
@@ -65,125 +62,151 @@ import com.alexc.ph.onealexapp.ui.theme.shapes
 fun MoviesScreen(
     modifier: Modifier = Modifier,
     moviesMoviesViewModel: MoviesViewModel = hiltViewModel(),
-    navigateToMovieDetails: (Movie) -> Unit = {}
+    navigateToMovieDetails: (BaseContent) -> Unit = {},
+    navigateToPagedList: (Category) -> Unit = {}
 ) {
     val moviesState by moviesMoviesViewModel.moviesUiState.collectAsStateWithLifecycle()
-    if (moviesState is MoviesUiState.Success) {
-        val movies = (moviesState as MoviesUiState.Success).movies
+    val moviesPaged = moviesMoviesViewModel.moviesPaged.collectAsLazyPagingItems()
+//    LaunchedEffect(Unit) {
+//        moviesMoviesViewModel.loadPaginatedMovies()
+//    }
 
-        MoviesScreen(
-            modifier = modifier.fillMaxWidth(),
-            movies = movies,
-            navigateToMovieDetails = navigateToMovieDetails
-        )
+    when(val uiState = moviesState) {
+        is MoviesUiState.Error -> GenericErrorScreen(onRetry = moviesMoviesViewModel::retry)
+        MoviesUiState.Loading -> LoadingScreen()
+        is MoviesUiState.Success -> {
+            MoviesScreen(
+                modifier = modifier.fillMaxSize(),
+                content = uiState.content,
+                navigateToMovieDetails = navigateToMovieDetails,
+                onCategoryClicked = navigateToPagedList
+            )
+        }
     }
 }
 
 @Composable
 fun MoviesScreen(
     modifier: Modifier = Modifier,
-    movies: CombinedMovies,
-    navigateToMovieDetails: (Movie) -> Unit = {}
+    content: CombinedMoviesAndSeries,
+    navigateToMovieDetails: (BaseContent) -> Unit = {},
+    onCategoryClicked: (Category) -> Unit = {}
 ) {
-    Column (
-        modifier.fillMaxSize()
-    ){
-        MovieRow(
-            modifier = modifier,
-            movies = movies.nowPlaying,
+    LazyColumn(
+        modifier = modifier.fillMaxSize()
+    ) {
+        movieItems(
+            movies = content.movies.popular,
             navigateToMovieDetails = navigateToMovieDetails
-        )
-        MovieRow(
-            modifier = modifier,
-            movies = movies.popular,
+        ) {
+            MovieHeaderContent(
+                headerTitle = stringResource(R.string.popular_movies),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onCategoryClicked(Category.POPULAR_MOVIES) }
+            )
+        }
+        movieItems(
+            movies = content.movies.nowPlaying,
             navigateToMovieDetails = navigateToMovieDetails
-        )
-    }
+        ) {
+            MovieHeaderContent(
+                headerTitle = stringResource(R.string.now_playing_movies),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onCategoryClicked(Category.NOW_PLAYING_MOVIES) }
+            )
+        }
 
+        movieItems(
+            movies = content.tvSeries.popular,
+            navigateToMovieDetails = navigateToMovieDetails
+        ) {
+            MovieHeaderContent(
+                headerTitle = stringResource(R.string.popular_series),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onCategoryClicked(Category.POPULAR_TV_SERIES) }
+            )
+        }
+
+        movieItems(
+            movies = content.tvSeries.topRated,
+            navigateToMovieDetails = navigateToMovieDetails
+        ) {
+            MovieHeaderContent(
+                headerTitle = stringResource(R.string.top_rated_series),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onCategoryClicked(Category.TOP_RATED_TV_SERIES) }
+            )
+        }
+
+        item {
+            Spacer(Modifier.height(LargeDp))
+        }
+    }
+}
+
+fun LazyListScope.movieItems(
+    movies: List<BaseContent>,
+    navigateToMovieDetails: (BaseContent) -> Unit,
+    headerContent: @Composable () -> Unit = {}
+) {
+    item {
+        Spacer(modifier = Modifier.height(MediumDp))
+        headerContent()
+        MovieRow(
+           movies = movies,
+           navigateToMovieDetails = navigateToMovieDetails,
+           modifier = Modifier.fillParentMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(MediumDp))
+    }
 }
 
 @Composable
-fun PopularMovies(
+fun MovieHeaderContent(
     modifier: Modifier = Modifier,
-    movies: List<Movie>,
-    navigateToMovieDetails: (Movie) -> Unit = {}
+    headerTitle: String
 ) {
-    LazyHorizontalGrid(
-        rows = GridCells.Fixed(2),
-        contentPadding = PaddingValues(horizontal = MediumDp),
-        horizontalArrangement = Arrangement.spacedBy(MediumDp),
-        verticalArrangement = Arrangement.spacedBy(MediumDp),
+    Row (
         modifier = modifier
+            .padding(horizontal = XLargeDp, vertical = SmallDp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        movies(
-            movies = movies,
-            navigateToMovieDetails = navigateToMovieDetails
+        Text(
+            text = headerTitle,
+            style = MovieHeaderTextStyle
+        )
+        Icon(
+            imageVector = Forward,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            contentDescription = null
         )
     }
-}
 
-@Composable
-fun NowPlayingMovies(
-    modifier: Modifier = Modifier,
-    movies: List<Movie>,
-    navigateToMovieDetails: (Movie) -> Unit = {}
-) {
-    LazyHorizontalGrid(
-        rows = GridCells.Fixed(2),
-        contentPadding = PaddingValues(horizontal = MediumDp),
-        horizontalArrangement = Arrangement.spacedBy(MediumDp),
-        verticalArrangement = Arrangement.spacedBy(MediumDp),
-        modifier = modifier
-    ) {
-        movies(
-            movies = movies,
-            navigateToMovieDetails = navigateToMovieDetails
-        )
-    }
 }
-
-fun LazyGridScope.movies(
-    movies: List<Movie>,
-    navigateToMovieDetails: (Movie) -> Unit = {}
-) {
-    items(items = movies, key = {it.id}) { movie ->
-        MovieItem(
-            modifier = Modifier
-                .width(MOVIE_IMAGE_SIZE_DP)
-                .clickable {
-                    navigateToMovieDetails(movie)
-                },
-            imageUrl = movie.posterPath,
-            title = movie.title,
-        )
-    }
-}
-
-private val MOVIE_IMAGE_SIZE_DP = 160.dp
 
 @Composable
 fun MovieRow(
     modifier: Modifier = Modifier,
-    movies: List<Movie>,
-    navigateToMovieDetails: (Movie) -> Unit = {}
+    movies: List<BaseContent>,
+    navigateToMovieDetails: (BaseContent) -> Unit = {}
 ) {
     LazyRow(
         modifier = modifier,
         contentPadding = PaddingValues(
-            start = 16.dp,
-            top = 8.dp,
-            end = 16.dp,
-            bottom = 24.dp
+            vertical = MediumDp,
+            horizontal = LargeDp
         ),
-        horizontalArrangement = Arrangement.spacedBy(24.dp)
+        horizontalArrangement = Arrangement.spacedBy(MediumDp)
     ) {
-        items(
-            items = movies,
-            key = { it.id }
-        ) { movie ->
+        items(items = movies, key = { it.id }) { movie ->
             MovieItem(
                 modifier = Modifier
-                    .width(MOVIE_IMAGE_SIZE_DP)
+                    .height(MOVIE_IMAGE_SIZE_DP)
+                    .aspectRatio(2 / 3f)
                     .clickable {
                         navigateToMovieDetails(movie)
                     },
@@ -194,6 +217,7 @@ fun MovieRow(
     }
 }
 
+
 @Composable
 fun MovieItem(
     modifier: Modifier = Modifier,
@@ -201,101 +225,31 @@ fun MovieItem(
     title: String,
 ) {
     Column (
-        modifier.semantics(mergeDescendants = true) {}
+        modifier = modifier
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
+                .fillMaxSize()
                 .align(Alignment.CenterHorizontally)
         ) {
-            MovieImage(
+            ContentImage(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(shapes.medium),
+                    .clip(shapes.small),
                 movieImageUrl = imageUrl,
                 contentDescription = title,
+                contentScale = ContentScale.FillBounds
             )
         }
-        Text(
-            text = title,
-            style = MovieTitleTextStyle,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .padding(top = MediumDp)
-                .align(Alignment.CenterHorizontally)
-        )
-    }
-}
-
-@Composable
-fun MovieImage(
-    modifier: Modifier = Modifier,
-    movieImageUrl: String,
-    contentDescription: String?,
-    contentScale: ContentScale = ContentScale.Crop,
-) {
-
-    var imagePainterState by remember {
-        mutableStateOf<AsyncImagePainter.State>(AsyncImagePainter.State.Empty)
-    }
-
-    val imageLoader = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(movieImageUrl)
-            .crossfade(true)
-            .build(),
-        contentScale = contentScale,
-        onState = { state -> imagePainterState = state }
-    )
-
-    val infiniteTransition = rememberInfiniteTransition(label = "infinite loading")
-    val alpha by infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = keyframes {
-                durationMillis = 1000
-                0.7f at 500
-            },
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "alpha"
-    )
-
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ){
-
-        when (imagePainterState) {
-            is AsyncImagePainter.State.Loading,
-            is AsyncImagePainter.State.Error -> {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
-                    alpha = alpha,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize()
-                )
-            }
-            else -> {
-                Box(
-                    modifier = Modifier
-                        .background(Color.Gray)
-                        .fillMaxSize()
-
-                )
-            }
-        }
-
-        Image(
-            painter = imageLoader,
-            contentDescription = contentDescription,
-            contentScale = contentScale,
-            modifier = modifier,
-        )
+//        Text(
+//            text = title,
+//            style = MovieTitleTextStyle,
+//            maxLines = 2,
+//            overflow = TextOverflow.Ellipsis,
+//            modifier = Modifier
+//                .padding(top = SmallDp, start = MediumDp)
+//                .align(Alignment.Start)
+//        )
     }
 }
 
@@ -303,15 +257,39 @@ fun MovieImage(
 @Composable
 fun MovieScreenPreview() {
     OneAlexAppTheme {
-        val movies = listOf(
-            Movie(id = 0, title = "Dummy Title 1"),
-            Movie(id = 1, title = "Dummy Title 2"),
-            Movie(id = 2, title = "Dummy Title 3"),
-            Movie(id = 3, title = "Dummy Title 4")
+        val popularMovies = listOf(
+            Movie(id = 0, title = "popular movie  1"),
+            Movie(id = 1, title = "popular movie 2"),
+            Movie(id = 2, title = "popular movie 3"),
+            Movie(id = 3, title = "popular movie 4")
         )
-        val combinedMovies = CombinedMovies(movies, movies)
+
+        val nowPlayingMovies = listOf(
+            Movie(id = 0, title = "nowplaying movie  1"),
+            Movie(id = 1, title = "nowplaying movie 2"),
+            Movie(id = 2, title = "nowplaying movie 3"),
+            Movie(id = 3, title = "nowplaying movie 4")
+        )
+
+        val popularSeries = listOf(
+            TvSeries(id = 0, title = "popular series 1"),
+            TvSeries(id = 1, title = "popular series 2"),
+            TvSeries(id = 2, title = "popular series 3"),
+            TvSeries(id = 3, title = "popular series 4")
+        )
+
+        val nowPlayingSeries = listOf(
+            TvSeries(id = 0, title = "nowplaying series 1"),
+            TvSeries(id = 1, title = "nowplaying series 2"),
+            TvSeries(id = 2, title = "nowplaying series 3"),
+            TvSeries(id = 3, title = "nowplaying series 4")
+        )
+        val combinedMoviesAndTvSeries = CombinedMoviesAndSeries(
+            movies = CombinedMovies(nowPlayingMovies, popularMovies),
+            tvSeries = CombinedTvSeries(nowPlayingSeries, popularSeries)
+        )
         MoviesScreen(
-            movies = combinedMovies
+            content = combinedMoviesAndTvSeries
         )
     }
 }
@@ -326,14 +304,3 @@ fun MovieItemPreview() {
         )
     }
 }
-
-fun LazyGridScope.fullWidthItem(
-    key: Any? = null,
-    contentType: Any? = null,
-    content: @Composable LazyGridItemScope.() -> Unit
-) = item(
-    span = { GridItemSpan(this.maxLineSpan) },
-    key = key,
-    contentType = contentType,
-    content = content
-)

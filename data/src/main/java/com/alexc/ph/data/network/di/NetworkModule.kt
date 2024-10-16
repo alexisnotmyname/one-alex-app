@@ -1,6 +1,8 @@
 package com.alexc.ph.data.network.di
 
 import com.alexc.ph.data.BuildConfig
+import com.alexc.ph.data.network.datasource.MovieDataSource
+import com.alexc.ph.data.network.datasource.MovieDataSourceImpl
 import com.alexc.ph.data.network.retrofit.MoviesRetrofit
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -24,6 +26,7 @@ internal object NetworkModule {
     @Singleton
     fun providesNetworkJson(): Json = Json {
         ignoreUnknownKeys = true
+        coerceInputValues = true
     }
 
     @Provides
@@ -75,6 +78,12 @@ internal object NetworkModule {
     ): MoviesRetrofit {
         return retrofit.create(MoviesRetrofit::class.java)
     }
-
+    @Provides
+    @Singleton
+    fun providesMovieDataSource(
+        moviesRetrofit: MoviesRetrofit
+    ): MovieDataSource {
+        return MovieDataSourceImpl(moviesRetrofit)
+    }
 
 }

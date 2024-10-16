@@ -5,14 +5,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.alexc.ph.onealexapp.ui.theme.AppTypography
 import com.alexc.ph.onealexapp.ui.theme.TodoItemTextColor
 import com.alexc.ph.onealexapp.ui.theme.surfaceVariantDark
 
-val MovieTitleTextStyle = TextStyle(
-    fontWeight = FontWeight.Normal,
-    fontSize = 14.sp,
-    letterSpacing = 0.5.sp,
+val MovieTitleTextStyle = AppTypography.labelLarge.copy(
     color = TodoItemTextColor
+)
+
+val MovieTitleHeadlineTextStyle = AppTypography.headlineSmall.copy(
+    color = TodoItemTextColor
+)
+
+val WatchNowButtonTextStyle = AppTypography.labelLarge.copy(
+    color = TodoItemTextColor
+)
+
+val MovieOverviewBodyTextStyle = AppTypography.bodyMedium.copy(
+    color = TodoItemTextColor
+)
+
+val MovieHeaderTextStyle = AppTypography.titleMedium.copy(
+    color = surfaceVariantDark
 )
 
 val TodayHeaderTextStyle = TextStyle(

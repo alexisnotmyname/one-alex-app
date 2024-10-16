@@ -42,24 +42,24 @@ fun OneAlexNavigationSuiteScaffold(
     val layoutType = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(windowAdaptiveInfo)
     val navigationSuiteItemColors = NavigationSuiteItemColors(
         navigationBarItemColors = NavigationBarItemDefaults.colors(
-            selectedIconColor = NiaNavigationDefaults.navigationSelectedItemColor(),
-            unselectedIconColor = NiaNavigationDefaults.navigationContentColor(),
-            selectedTextColor = NiaNavigationDefaults.navigationSelectedItemColor(),
-            unselectedTextColor = NiaNavigationDefaults.navigationContentColor(),
-            indicatorColor = NiaNavigationDefaults.navigationIndicatorColor(),
+            selectedIconColor = OneAlexNavigationDefaults.navigationSelectedItemColor(),
+            unselectedIconColor = OneAlexNavigationDefaults.navigationContentColor(),
+            selectedTextColor = OneAlexNavigationDefaults.navigationSelectedItemColor(),
+            unselectedTextColor = OneAlexNavigationDefaults.navigationContentColor(),
+            indicatorColor = OneAlexNavigationDefaults.navigationIndicatorColor(),
         ),
         navigationRailItemColors = NavigationRailItemDefaults.colors(
-            selectedIconColor = NiaNavigationDefaults.navigationSelectedItemColor(),
-            unselectedIconColor = NiaNavigationDefaults.navigationContentColor(),
-            selectedTextColor = NiaNavigationDefaults.navigationSelectedItemColor(),
-            unselectedTextColor = NiaNavigationDefaults.navigationContentColor(),
-            indicatorColor = NiaNavigationDefaults.navigationIndicatorColor(),
+            selectedIconColor = OneAlexNavigationDefaults.navigationSelectedItemColor(),
+            unselectedIconColor = OneAlexNavigationDefaults.navigationContentColor(),
+            selectedTextColor = OneAlexNavigationDefaults.navigationSelectedItemColor(),
+            unselectedTextColor = OneAlexNavigationDefaults.navigationContentColor(),
+            indicatorColor = OneAlexNavigationDefaults.navigationIndicatorColor(),
         ),
         navigationDrawerItemColors = NavigationDrawerItemDefaults.colors(
-            selectedIconColor = NiaNavigationDefaults.navigationSelectedItemColor(),
-            unselectedIconColor = NiaNavigationDefaults.navigationContentColor(),
-            selectedTextColor = NiaNavigationDefaults.navigationSelectedItemColor(),
-            unselectedTextColor = NiaNavigationDefaults.navigationContentColor(),
+            selectedIconColor = OneAlexNavigationDefaults.navigationSelectedItemColor(),
+            unselectedIconColor = OneAlexNavigationDefaults.navigationContentColor(),
+            selectedTextColor = OneAlexNavigationDefaults.navigationSelectedItemColor(),
+            unselectedTextColor = OneAlexNavigationDefaults.navigationContentColor(),
         ),
     )
 
@@ -109,7 +109,7 @@ class OneAlexNavigationSuiteScope internal constructor(
     )
 }
 
-object NiaNavigationDefaults {
+object OneAlexNavigationDefaults {
     @Composable
     fun navigationContentColor() = MaterialTheme.colorScheme.onSurfaceVariant
 

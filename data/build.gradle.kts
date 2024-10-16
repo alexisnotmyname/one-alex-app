@@ -72,6 +72,7 @@ dependencies {
     implementation (libs.retrofit.core)
     implementation(libs.retrofit.kotlin.serialization)
 
+    implementation(libs.androidx.paging.runtime.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

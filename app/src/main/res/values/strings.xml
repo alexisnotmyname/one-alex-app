@@ -20,4 +20,11 @@
     <string name="notification_permission_title">Notification permission</string>
     <string name="notification_permission_description">The notification permission is important for this app. Please grant the permission.</string>
     <string name="notification_permission_settings">The notification permission is important for this app. Please navigate to your device settings and enable notifications for One Alex</string>
+    <string name="cd_back">back</string>
+    <string name="an_error_has_occurred">An error has occured</string>
+    <string name="retry_label">Retry</string>
+    <string name="popular_movies">Popular Movies</string>
+    <string name="now_playing_movies">Now Playing Movies</string>
+    <string name="popular_series">Popular Series</string>
+    <string name="top_rated_series">Top Rated Series</string>
 </resources>
