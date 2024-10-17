@@ -1,6 +1,6 @@
 # One Alex app
 
-One Alex app mutli-module demo Android app built using modern development practices and architecture. The app demonstrates clean architecture, Jetpack Compose, and efficient code design.
+One Alex app is a mutli-module demo Android app built using modern development practices and architecture. The app demonstrates clean architecture, Jetpack Compose, and efficient code design.
 
 ## Features
 
@@ -9,7 +9,7 @@ One Alex app mutli-module demo Android app built using modern development practi
 - Drag-and-drop to reorder tasks, similar to Google Keep.
 
 ### Movie & TV Series
-- View **Popular** and **Now Playing** movies.
+- View **Popular** and **Now Playing** Movies.
 - View **Top Rated** and **Popular** TV Series.
 - Powered by the [TMDB API](https://www.themoviedb.org/documentation/api).
 
