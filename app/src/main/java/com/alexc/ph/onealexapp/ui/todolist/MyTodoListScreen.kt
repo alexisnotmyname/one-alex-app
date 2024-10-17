@@ -18,45 +18,40 @@ package com.alexc.ph.onealexapp.ui.todolist
 
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.alexc.ph.onealexapp.ui.constants.MediumDp
+import com.alexc.ph.domain.model.TodoItem
+import com.alexc.ph.onealexapp.ui.components.DraggableLazyColumn
 import com.alexc.ph.onealexapp.ui.constants.OverlappingHeight
-import com.alexc.ph.onealexapp.ui.constants.SmallDp
 import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
 
 @Composable
 fun MyTodoListScreen(
     modifier: Modifier = Modifier,
-    viewModel: TodoListViewModel = hiltViewModel()
+    todoViewModel: TodoListViewModel = hiltViewModel()
 ) {
-    val items by viewModel.uiState.collectAsStateWithLifecycle()
+    val items by todoViewModel.uiState.collectAsStateWithLifecycle()
     if (items is TodoListUiState.Success) {
         val todoList = (items as TodoListUiState.Success).todoList
-        val currentDate = viewModel.getCurrentDate()
+        val currentDate = todoViewModel.getCurrentDate()
         MyTodoListScreen(
             modifier = modifier,
             dateToday = currentDate,
             todoList = todoList,
-            onItemClick = viewModel::toggleTodo,
-            onItemDelete = viewModel::removeTodo,
-            onAddButtonClick = viewModel::addTodo
+            onItemClick = todoViewModel::toggleTodo,
+            onItemDelete = todoViewModel::removeTodo,
+            onItemDragged = todoViewModel::reorderTodoList,
+            onItemDraggedEnd = todoViewModel::updateTodoList,
+            onAddButtonClick = todoViewModel::addTodo
         )
     }
 }
@@ -68,25 +63,35 @@ fun MyTodoListScreen(
     todoList: List<TodoItem>,
     onItemClick: (item: TodoItem) -> Unit = {},
     onItemDelete: (item: TodoItem) -> Unit = {},
-    onAddButtonClick: (todo: String) -> Unit = {}
+    onItemDragged: (draggedIndex: Int, targetIndex: Int) -> Unit = {_, _ ->},
+    onItemDraggedEnd: () -> Unit = {},
+    onAddButtonClick: (todo: String) -> Unit = {},
 ) {
     Column(
         modifier = modifier.fillMaxSize()
     ) {
         ToDoListHeader(
+            modifier = Modifier.fillMaxWidth(),
             dateToday = dateToday
         )
         Box(
             modifier = modifier
                 .fillMaxSize()
         ) {
-            MyTodoListContainer(
-                modifier = Modifier,
+            DraggableLazyColumn(
+                modifier = Modifier.fillMaxWidth(),
                 todoItems = todoList,
-                onItemClick = onItemClick,
-                onItemDelete = onItemDelete,
+                onItemDragged = onItemDragged,
+                onItemDraggedEnd = onItemDraggedEnd,
                 overlappingElementsHeight = OverlappingHeight
-            )
+            ) { item, _ ->
+                TodoItemUi(
+                    modifier = Modifier,
+                    item = item,
+                    onItemClick = onItemClick,
+                    onItemDelete = onItemDelete
+                )
+            }
             TodoInputBar(
                 modifier = Modifier
                     .align(Alignment.BottomStart),
@@ -95,32 +100,6 @@ fun MyTodoListScreen(
         }
     }
 }
-
-@Composable
-internal fun MyTodoListContainer(
-    modifier: Modifier = Modifier,
-    todoItems: List<TodoItem>,
-    onItemClick: (item: TodoItem) -> Unit = {},
-    onItemDelete: (item: TodoItem) -> Unit = {},
-    overlappingElementsHeight: Dp = 0.dp
-) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(MediumDp),
-        verticalArrangement = Arrangement.spacedBy(SmallDp)
-    ){
-        items(items = todoItems, key = { it.id }) { item ->
-            TodoItemUi(
-                modifier = Modifier,
-                item = item,
-                onItemClick = onItemClick,
-                onItemDelete = onItemDelete
-            )
-        }
-        item { Spacer(modifier = Modifier.height(overlappingElementsHeight)) }
-    }
-}
-
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable

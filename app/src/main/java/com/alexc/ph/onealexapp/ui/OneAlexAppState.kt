@@ -2,7 +2,6 @@ package com.alexc.ph.onealexapp.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -10,32 +9,30 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.alexc.ph.onealexapp.ui.budget.navigateToBudgetTracker
+import com.alexc.ph.domain.model.BaseContent
+import com.alexc.ph.domain.model.Category
+import com.alexc.ph.onealexapp.ui.movies.paged.navigateToPagedList
+import com.alexc.ph.onealexapp.ui.movies.details.navigateToMovieDetails
 import com.alexc.ph.onealexapp.ui.movies.navigateToMovies
 import com.alexc.ph.onealexapp.ui.navigation.TopLevelDestination
 import com.alexc.ph.onealexapp.ui.todolist.navigateToTodoList
-import kotlinx.coroutines.CoroutineScope
 
 
 @Composable
 fun rememberOneAlexAppState(
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
 ): OneAlexAppState {
     return remember(
         navController,
-        coroutineScope
     ) {
         OneAlexAppState(
-            navController = navController,
-            coroutineScope = coroutineScope
+            navController = navController
         )
     }
 }
 
 class OneAlexAppState(
     val navController: NavHostController,
-    coroutineScope: CoroutineScope
 ) {
     val currentDestination: NavDestination?
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination
@@ -60,8 +57,23 @@ class OneAlexAppState(
 
         when(topLevelDestination) {
             TopLevelDestination.TODO_LIST -> navController.navigateToTodoList(topLevelNavOptions)
-            TopLevelDestination.BUDGET_TRACKER -> navController.navigateToBudgetTracker(topLevelNavOptions)
             TopLevelDestination.MOVIES -> navController.navigateToMovies(topLevelNavOptions)
         }
+    }
+
+    fun navigateBack() {
+        navController.popBackStack()
+    }
+
+    fun navigateToMovieDetails(content: BaseContent) {
+        navController.navigateToMovieDetails(content.id, content.contentType)
+    }
+
+    fun navigateToPagedList(category: Category) {
+        navController.navigateToPagedList(category)
+    }
+
+    fun watch(title: String) {
+        // TODO redirect to watch link
     }
 }

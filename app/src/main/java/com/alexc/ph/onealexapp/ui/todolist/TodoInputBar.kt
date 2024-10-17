@@ -67,7 +67,7 @@ fun TodoInputBar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TextField(
-                modifier = Modifier.weight(2f),
+                modifier = Modifier.weight(1f),
                 textStyle = TodoInputBarTextStyle,
                 value = input,
                 onValueChange = { newText ->

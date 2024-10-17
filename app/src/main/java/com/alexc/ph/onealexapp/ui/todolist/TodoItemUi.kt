@@ -1,5 +1,6 @@
 package com.alexc.ph.onealexapp.ui.todolist
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,11 +31,12 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.alexc.ph.domain.model.TodoItem
 import com.alexc.ph.onealexapp.ui.constants.LargeDp
 import com.alexc.ph.onealexapp.ui.constants.MediumDp
 import com.alexc.ph.onealexapp.ui.constants.TodoItemHeight
 import com.alexc.ph.onealexapp.ui.constants.TodoItemIconSize
-import com.alexc.ph.onealexapp.ui.theme.AppTypography
+import com.alexc.ph.onealexapp.ui.constants.TodoItemTitleTextStyle
 import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
 import com.alexc.ph.onealexapp.ui.theme.TodoItemBackgroundColor
 import com.alexc.ph.onealexapp.ui.theme.TodoItemIconColor
@@ -84,9 +86,9 @@ fun TodoItemUi(
                 colorFilter = iconColorFilter
             )
             Text(
-                text = item.name,
+                text = item.title,
                 modifier = Modifier.weight(1f),
-                style = AppTypography.labelMedium.copy(color = textColor),
+                style = TodoItemTitleTextStyle.copy(color = textColor),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 textDecoration = textDecoration
@@ -105,7 +107,16 @@ fun TodoItemUi(
         }
     }
 }
-@Preview
+@Preview(
+    name = "Light Mode",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    name = "Dark Mode",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 fun ToDoItemUiPreview() {
     OneAlexAppTheme {
