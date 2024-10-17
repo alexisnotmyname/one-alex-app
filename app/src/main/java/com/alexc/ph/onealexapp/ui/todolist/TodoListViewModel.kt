@@ -2,8 +2,8 @@ package com.alexc.ph.onealexapp.ui.todolist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alexc.ph.data.db.model.TodoEntity
-import com.alexc.ph.data.repository.TodoListRepository
+import com.alexc.ph.domain.model.TodoItem
+import com.alexc.ph.domain.repository.TodoListRepository
 import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Error
 import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Loading
 import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Success
@@ -36,28 +36,26 @@ class TodoListViewModel@Inject constructor(
     private fun getTodoList()  {
         viewModelScope.launch {
             todoListRepository.myTodoList.collect{
-                _todoList.value = it.map { todoEntity ->
-                    todoEntity.toTodoItem()
-                }
+                _todoList.value = it
             }
         }
     }
 
     fun addTodo(todo: String) = viewModelScope.launch {
-            todoListRepository.add(TodoEntity(title = todo, order = _todoList.value.size))
+            todoListRepository.add(TodoItem(title = todo, order = _todoList.value.size))
         }
 
     fun toggleTodo(todo: TodoItem) = viewModelScope.launch {
-            val todoEntity = todo.toTodoEntity().copy(isDone = !todo.isDone)
+            val todoEntity = todo.copy(isDone = !todo.isDone)
             todoListRepository.update(todoEntity)
         }
 
     fun removeTodo(todo: TodoItem) = viewModelScope.launch {
-            todoListRepository.delete(todo.toTodoEntity())
+            todoListRepository.delete(todo)
         }
 
     fun updateTodoList() = viewModelScope.launch {
-        val todoEntityList = _todoList.value.map { it.toTodoEntity() }
+        val todoEntityList = _todoList.value
         todoListRepository.updateTodoItems(todoEntityList)
     }
 
@@ -78,16 +76,6 @@ class TodoListViewModel@Inject constructor(
         return currentDate.format(formatter)
     }
 }
-
-data class TodoItem(
-    val id: Int,
-    val name: String,
-    val isDone: Boolean = false,
-    val order: Int
-)
-
-fun TodoItem.toTodoEntity() = TodoEntity(id = id, title = name, isDone = isDone, order = order)
-fun TodoEntity.toTodoItem() = TodoItem(id = id, name = title, isDone = isDone, order = order)
 
 sealed interface TodoListUiState {
     object Loading : TodoListUiState

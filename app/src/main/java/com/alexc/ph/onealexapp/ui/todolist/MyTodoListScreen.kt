@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alexc.ph.domain.model.TodoItem
 import com.alexc.ph.onealexapp.ui.components.DraggableLazyColumn
 import com.alexc.ph.onealexapp.ui.constants.OverlappingHeight
 import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme

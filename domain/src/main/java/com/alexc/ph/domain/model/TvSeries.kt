@@ -1,10 +1,5 @@
 package com.alexc.ph.domain.model
 
-import com.alexc.ph.data.network.model.SeasonResponse
-import com.alexc.ph.data.network.model.TvSeriesResponse
-import com.alexc.ph.domain.util.backdropImageUrl
-import com.alexc.ph.domain.util.posterImageUrl
-
 data class TvSeries(
     override val id: Int,
     override val title: String,
@@ -35,32 +30,5 @@ data class Season(
     val voteAverage: Double = .0
 )
 
-fun TvSeriesResponse.toTvSeries(configuration: Configuration? = null) = TvSeries(
-    id = this.id,
-    title = this.name,
-    overview = this.overview,
-    popularity = this.popularity,
-    adult = this.adult,
-    firstAirDate = this.firstAirDate,
-    genres = this.genres.map { it.toGenre() },
-    originCountry = this.originCountry,
-    originalLanguage = this.originalLanguage,
-    originalName = this.originalName,
-    backdropPath = this.backdropPath.backdropImageUrl(configuration),
-    posterPath = this.posterPath.posterImageUrl(configuration),
-    voteAverage = this.voteAverage,
-    voteCount = this.voteCount,
-    seasons = this.seasons.map { it.toSeason() },
-)
 
-fun SeasonResponse.toSeason() = Season(
-    id = this.id,
-    name = this.name,
-    overview = this.overview,
-    airDate = this.airDate,
-    episodeCount = this.episodeCount,
-    posterPath = this.posterPath,
-    seasonNumber = this.seasonNumber,
-    voteAverage = this.voteAverage
-)
 

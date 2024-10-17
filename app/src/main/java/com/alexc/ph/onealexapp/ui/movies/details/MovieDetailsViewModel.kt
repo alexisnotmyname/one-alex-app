@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.alexc.ph.data.network.util.Result
+import com.alexc.ph.domain.model.Result
 import com.alexc.ph.domain.GetMovieDetailsUseCase
 import com.alexc.ph.domain.model.ContentItem
 import com.alexc.ph.domain.model.ContentType

@@ -1,8 +1,5 @@
 package com.alexc.ph.onealexapp.ui
 
-import android.Manifest
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -22,14 +19,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -40,9 +35,6 @@ import com.alexc.ph.onealexapp.ui.components.OneAlexTopAppBar
 import com.alexc.ph.onealexapp.ui.navigation.OneAlexNavHost
 import com.alexc.ph.onealexapp.ui.navigation.OneAlexNavigationSuiteScaffold
 import com.alexc.ph.onealexapp.ui.settings.SettingsDialog
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionStatus.Denied
-import com.google.accompanist.permissions.rememberPermissionState
 import kotlin.reflect.KClass
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,10 +44,6 @@ fun OneAlexApp(
     appState: OneAlexAppState,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()
 ) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        RequestNotificationPermissionEffect()
-    }
-
     val currentDestination = appState.currentDestination
     var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -64,9 +52,7 @@ fun OneAlexApp(
             onDismiss = {
                 showSettingsDialog = false
             },
-            onButtonClicked = {
-                println("Button clicked")
-            }
+            onButtonClicked = { }
         )
     }
 
@@ -121,19 +107,10 @@ fun OneAlexApp(
                     OneAlexTopAppBar(
                         titleRes = destination.titleTextId,
                         navigationIcon = OneAlexAppIcons.Search,
-                        navigationIconContentDescription = stringResource(
-                            id = R.string.search,
-                        ),
-                        actionIcon = OneAlexAppIcons.Settings,
-                        actionIconContentDescription = stringResource(
-                            id = R.string.settings,
-                        ),
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                            containerColor = Color.Transparent,
-                        ),
-                        onActionClick = { showSettingsDialog = true },
+                        navigationIconContentDescription = stringResource(id = R.string.search,),
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
                         onNavigationClick = { // TODO add search
-                        },
+                        }
                     )
                 }
 
@@ -155,21 +132,6 @@ fun OneAlexApp(
                     )
                 }
             }
-        }
-    }
-}
-
-
-@Composable
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@OptIn(ExperimentalPermissionsApi::class)
-fun RequestNotificationPermissionEffect() {
-    if (LocalInspectionMode.current) return
-    val notificationsPermissionState = rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-    LaunchedEffect(notificationsPermissionState) {
-        val status = notificationsPermissionState.status
-        if (status is Denied && !status.shouldShowRationale) {
-            notificationsPermissionState.launchPermissionRequest()
         }
     }
 }

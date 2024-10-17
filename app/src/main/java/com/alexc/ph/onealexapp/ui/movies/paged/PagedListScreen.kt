@@ -1,4 +1,4 @@
-package com.alexc.ph.onealexapp.ui.movies.category
+package com.alexc.ph.onealexapp.ui.movies.paged
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,15 +16,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.alexc.ph.domain.model.BaseContent
-import com.alexc.ph.domain.model.Category
-import com.alexc.ph.domain.model.Movie
 import com.alexc.ph.onealexapp.ui.components.GenericErrorScreen
 import com.alexc.ph.onealexapp.ui.components.GenericTopAppBar
 import com.alexc.ph.onealexapp.ui.components.LoadingScreen
@@ -32,9 +28,6 @@ import com.alexc.ph.onealexapp.ui.constants.MOVIE_IMAGE_SIZE_DP
 import com.alexc.ph.onealexapp.ui.constants.MediumDp
 import com.alexc.ph.onealexapp.ui.constants.TOP_APP_BAR_HEIGHT_DP
 import com.alexc.ph.onealexapp.ui.movies.MovieItem
-import com.alexc.ph.onealexapp.ui.movies.details.MovieDetailsUiState
-import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
-import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun PagedListScreen(

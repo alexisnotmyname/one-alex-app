@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alexc.ph.onealexapp.util
+package com.alexc.ph.onealexapp.ui.util
 
 import androidx.annotation.FloatRange
 import androidx.compose.foundation.background

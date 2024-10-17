@@ -79,6 +79,7 @@ internal object NetworkModule {
         return retrofit.create(MoviesRetrofit::class.java)
     }
     @Provides
+
     @Singleton
     fun providesMovieDataSource(
         moviesRetrofit: MoviesRetrofit

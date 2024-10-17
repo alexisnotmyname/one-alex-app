@@ -1,6 +1,4 @@
-package com.alexc.ph.data.network.util
-
-import retrofit2.Response
+package com.alexc.ph.domain.model
 
 sealed interface Result<out T> {
     data class Success<T>(val data: T) : Result<T>

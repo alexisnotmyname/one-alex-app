@@ -1,13 +1,11 @@
 package com.alexc.ph.domain
 
-import com.alexc.ph.data.repository.MoviesRepository
-import com.alexc.ph.data.repository.TvSeriesRepository
-import com.alexc.ph.data.network.util.Result
 import com.alexc.ph.domain.model.CombinedMovies
 import com.alexc.ph.domain.model.CombinedMoviesAndSeries
 import com.alexc.ph.domain.model.CombinedTvSeries
-import com.alexc.ph.domain.model.toMovie
-import com.alexc.ph.domain.model.toTvSeries
+import com.alexc.ph.domain.model.Result
+import com.alexc.ph.domain.repository.MoviesRepository
+import com.alexc.ph.domain.repository.TvSeriesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -52,10 +50,10 @@ class GetMovieAndTvSeriesUseCase @Inject constructor(
                 return@combine Result.Error(error.exception)
             }
 
-            val moviesNowPlaying = (nowPlayingMovies as Result.Success).data.map { it.toMovie() }
-            val moviesPopular = (popularMovies as Result.Success).data.map { it.toMovie() }
-            val tvSeriesTopRated = (topRatedTvSeries as Result.Success).data.map { it.toTvSeries() }
-            val tvSeriesPopular = (popularTvSeries as Result.Success).data.map { it.toTvSeries() }
+            val moviesNowPlaying = (nowPlayingMovies as Result.Success).data
+            val moviesPopular = (popularMovies as Result.Success).data
+            val tvSeriesTopRated = (topRatedTvSeries as Result.Success).data
+            val tvSeriesPopular = (popularTvSeries as Result.Success).data
 
             return@combine Result.Success(
                 CombinedMoviesAndSeries(

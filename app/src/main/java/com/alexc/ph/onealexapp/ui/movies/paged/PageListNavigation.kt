@@ -1,6 +1,4 @@
-package com.alexc.ph.onealexapp.ui.movies.category
-
-import com.alexc.ph.onealexapp.ui.movies.details.MovieDetailsScreen
+package com.alexc.ph.onealexapp.ui.movies.paged
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.EaseIn

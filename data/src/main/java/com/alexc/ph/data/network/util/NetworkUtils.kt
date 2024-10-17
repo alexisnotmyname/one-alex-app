@@ -1,5 +1,6 @@
 package com.alexc.ph.data.network.util
 
+import com.alexc.ph.domain.model.Result
 import retrofit2.Response
 
 inline fun<T> result(call: () -> Response<T>) : Result<T> {

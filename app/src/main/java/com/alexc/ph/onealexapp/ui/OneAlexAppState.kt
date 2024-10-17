@@ -11,7 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.alexc.ph.domain.model.BaseContent
 import com.alexc.ph.domain.model.Category
-import com.alexc.ph.onealexapp.ui.movies.category.navigateToPagedList
+import com.alexc.ph.onealexapp.ui.movies.paged.navigateToPagedList
 import com.alexc.ph.onealexapp.ui.movies.details.navigateToMovieDetails
 import com.alexc.ph.onealexapp.ui.movies.navigateToMovies
 import com.alexc.ph.onealexapp.ui.navigation.TopLevelDestination
@@ -74,6 +74,6 @@ class OneAlexAppState(
     }
 
     fun watch(title: String) {
-        // TODO redirect to link
+        // TODO redirect to watch link
     }
 }

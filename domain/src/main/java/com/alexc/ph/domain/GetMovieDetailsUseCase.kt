@@ -1,12 +1,11 @@
 package com.alexc.ph.domain
 
-import com.alexc.ph.data.repository.MoviesRepository
-import com.alexc.ph.data.network.util.Result
-import com.alexc.ph.data.repository.TvSeriesRepository
+
 import com.alexc.ph.domain.model.ContentItem
 import com.alexc.ph.domain.model.ContentType
-import com.alexc.ph.domain.model.toMovie
-import com.alexc.ph.domain.model.toTvSeries
+import com.alexc.ph.domain.model.Result
+import com.alexc.ph.domain.repository.MoviesRepository
+import com.alexc.ph.domain.repository.TvSeriesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -22,7 +21,7 @@ class GetMovieDetailsUseCase @Inject constructor(
                     when(result) {
                         is Result.Error -> Result.Error(result.exception)
                         Result.Loading -> Result.Loading
-                        is Result.Success -> Result.Success(ContentItem.MovieItem(result.data.toMovie()))
+                        is Result.Success -> Result.Success(ContentItem.MovieItem(result.data))
                     }
                 }
             }
@@ -31,7 +30,7 @@ class GetMovieDetailsUseCase @Inject constructor(
                     when(result) {
                         is Result.Error -> Result.Error(result.exception)
                         Result.Loading -> Result.Loading
-                        is Result.Success -> Result.Success(ContentItem.TvSeriesItem(result.data.toTvSeries()))
+                        is Result.Success -> Result.Success(ContentItem.TvSeriesItem(result.data))
                     }
                 }
             }

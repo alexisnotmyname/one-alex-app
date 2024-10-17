@@ -52,7 +52,7 @@ import com.alexc.ph.onealexapp.ui.constants.SmallDp
 import com.alexc.ph.onealexapp.ui.constants.TOP_APP_BAR_HEIGHT_DP
 import com.alexc.ph.onealexapp.ui.constants.WatchNowButtonTextStyle
 import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
-import com.alexc.ph.onealexapp.util.verticalGradientScrim
+import com.alexc.ph.onealexapp.ui.util.verticalGradientScrim
 
 @Composable
 fun MovieDetailsScreen(

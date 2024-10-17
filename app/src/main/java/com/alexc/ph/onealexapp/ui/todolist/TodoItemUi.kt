@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.alexc.ph.domain.model.TodoItem
 import com.alexc.ph.onealexapp.ui.constants.LargeDp
 import com.alexc.ph.onealexapp.ui.constants.MediumDp
 import com.alexc.ph.onealexapp.ui.constants.TodoItemHeight
@@ -85,7 +86,7 @@ fun TodoItemUi(
                 colorFilter = iconColorFilter
             )
             Text(
-                text = item.name,
+                text = item.title,
                 modifier = Modifier.weight(1f),
                 style = TodoItemTitleTextStyle.copy(color = textColor),
                 maxLines = 1,

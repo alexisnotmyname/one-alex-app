@@ -103,7 +103,6 @@ dependencies {
     implementation(libs.firebase.messaging.ktx)
     implementation(libs.accompanist.permissions)
 
-
     // Tooling
     debugImplementation(libs.androidx.ui.tooling)
     // Instrumented tests
@@ -113,7 +112,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-
-
 }

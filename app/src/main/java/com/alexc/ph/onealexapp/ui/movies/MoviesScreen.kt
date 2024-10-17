@@ -12,15 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyGridItemScope
-import androidx.compose.foundation.lazy.grid.LazyGridScope
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,8 +29,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.alexc.ph.domain.model.BaseContent
 import com.alexc.ph.domain.model.Category
 import com.alexc.ph.domain.model.CombinedMovies
@@ -66,10 +58,6 @@ fun MoviesScreen(
     navigateToPagedList: (Category) -> Unit = {}
 ) {
     val moviesState by moviesMoviesViewModel.moviesUiState.collectAsStateWithLifecycle()
-    val moviesPaged = moviesMoviesViewModel.moviesPaged.collectAsLazyPagingItems()
-//    LaunchedEffect(Unit) {
-//        moviesMoviesViewModel.loadPaginatedMovies()
-//    }
 
     when(val uiState = moviesState) {
         is MoviesUiState.Error -> GenericErrorScreen(onRetry = moviesMoviesViewModel::retry)

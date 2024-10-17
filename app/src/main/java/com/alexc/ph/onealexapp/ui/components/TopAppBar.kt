@@ -28,11 +28,8 @@ fun OneAlexTopAppBar(
     @StringRes titleRes: Int,
     navigationIcon: ImageVector,
     navigationIconContentDescription: String,
-    actionIcon: ImageVector,
-    actionIconContentDescription: String,
     colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
     onNavigationClick: () -> Unit = {},
-    onActionClick: () -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
         title = { Text(text = stringResource(id = titleRes)) },
@@ -41,15 +38,6 @@ fun OneAlexTopAppBar(
                 Icon(
                     imageVector = navigationIcon,
                     contentDescription = navigationIconContentDescription,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-        },
-        actions = {
-            IconButton(onClick = onActionClick) {
-                Icon(
-                    imageVector = actionIcon,
-                    contentDescription = actionIconContentDescription,
                     tint = MaterialTheme.colorScheme.onSurface,
                 )
             }

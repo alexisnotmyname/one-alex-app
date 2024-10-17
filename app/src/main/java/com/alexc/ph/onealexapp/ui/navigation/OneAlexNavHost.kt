@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import com.alexc.ph.domain.model.BaseContent
 import com.alexc.ph.domain.model.Category
 import com.alexc.ph.onealexapp.ui.OneAlexAppState
-import com.alexc.ph.onealexapp.ui.movies.category.pagedListScreen
+import com.alexc.ph.onealexapp.ui.movies.paged.pagedListScreen
 import com.alexc.ph.onealexapp.ui.movies.details.movieDetailsScreen
 import com.alexc.ph.onealexapp.ui.movies.moviesScreen
 

@@ -1,5 +1,9 @@
 package com.alexc.ph.data.network.model
 
+import com.alexc.ph.domain.model.Configuration
+import com.alexc.ph.domain.model.Movie
+import com.alexc.ph.domain.util.backdropImageUrl
+import com.alexc.ph.domain.util.posterImageUrl
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -20,4 +24,22 @@ data class MovieResponse(
     @SerialName("vote_average") val voteAverage: Double = .0,
     @SerialName("vote_count") val voteCount: Int = 0,
     @SerialName("runtime") val runTime: Int = 0
+)
+
+fun MovieResponse.toMovie(configuration: Configuration? = null) = Movie(
+    id = this.id,
+    title = this.title,
+    video = this.video,
+    adult = this.adult,
+    overview = this.overview,
+    popularity = this.popularity,
+    genres = this.genres.map { it.toGenre() },
+    originalLanguage = this.originalLanguage,
+    originalTitle = this.originalTitle,
+    backdropPath = this.backdropPath.backdropImageUrl(configuration),
+    posterPath = this.posterPath.posterImageUrl(configuration),
+    releaseDate = this.releaseDate,
+    voteAverage = this.voteAverage,
+    voteCount = this.voteCount,
+    runTime = this.runTime,
 )

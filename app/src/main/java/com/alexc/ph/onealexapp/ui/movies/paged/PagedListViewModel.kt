@@ -1,4 +1,4 @@
-package com.alexc.ph.onealexapp.ui.movies.category
+package com.alexc.ph.onealexapp.ui.movies.paged
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -9,7 +9,7 @@ import androidx.paging.cachedIn
 import com.alexc.ph.domain.GetPagedContentUseCase
 import com.alexc.ph.domain.model.BaseContent
 import com.alexc.ph.domain.model.Category
-import com.alexc.ph.onealexapp.ui.movies.category.PagedListUiState.*
+import com.alexc.ph.onealexapp.ui.movies.paged.PagedListUiState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

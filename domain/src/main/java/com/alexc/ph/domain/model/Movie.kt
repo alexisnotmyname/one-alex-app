@@ -1,9 +1,5 @@
 package com.alexc.ph.domain.model
 
-import com.alexc.ph.data.network.model.MovieResponse
-import com.alexc.ph.domain.util.backdropImageUrl
-import com.alexc.ph.domain.util.posterImageUrl
-
 data class Movie(
     override val id: Int,
     override val title: String,
@@ -23,23 +19,7 @@ data class Movie(
     val runTime: Int = 0
 ) : BaseContent()
 
-fun MovieResponse.toMovie(configuration: Configuration? = null) = Movie(
-    id = this.id,
-    title = this.title,
-    video = this.video,
-    adult = this.adult,
-    overview = this.overview,
-    popularity = this.popularity,
-    genres = this.genres.map { it.toGenre() },
-    originalLanguage = this.originalLanguage,
-    originalTitle = this.originalTitle,
-    backdropPath = this.backdropPath.backdropImageUrl(configuration),
-    posterPath = this.posterPath.posterImageUrl(configuration),
-    releaseDate = this.releaseDate,
-    voteAverage = this.voteAverage,
-    voteCount = this.voteCount,
-    runTime = this.runTime,
-)
+
 
 
 

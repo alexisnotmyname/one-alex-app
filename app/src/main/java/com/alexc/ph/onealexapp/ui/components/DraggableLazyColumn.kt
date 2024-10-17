@@ -23,10 +23,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.alexc.ph.domain.model.TodoItem
 import com.alexc.ph.onealexapp.ui.constants.MediumDp
 import com.alexc.ph.onealexapp.ui.constants.SmallDp
 import com.alexc.ph.onealexapp.ui.constants.TodoItemHeight
-import com.alexc.ph.onealexapp.ui.todolist.TodoItem
 import kotlin.math.roundToInt
 
 
