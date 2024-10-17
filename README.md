@@ -13,6 +13,10 @@ One Alex app mutli-module demo Android app built using modern development practi
 - View **Top Rated** and **Popular** TV Series.
 - Powered by the [TMDB API](https://www.themoviedb.org/documentation/api).
 
+<p align="center">
+<img src="/previews/screenshots.png" />
+</p>
+
 ## Tech Stack
 
 - **Language**: [Kotlin](https://kotlinlang.org/)
