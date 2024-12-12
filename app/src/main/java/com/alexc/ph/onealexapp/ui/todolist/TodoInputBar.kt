@@ -38,10 +38,7 @@ import com.alexc.ph.onealexapp.ui.constants.LargeDp
 import com.alexc.ph.onealexapp.ui.constants.MediumDp
 import com.alexc.ph.onealexapp.ui.constants.TodoInputBarFabSize
 import com.alexc.ph.onealexapp.ui.constants.TodoInputBarHeight
-import com.alexc.ph.onealexapp.ui.constants.TodoInputBarTextStyle
 import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
-import com.alexc.ph.onealexapp.ui.theme.TodoInputBarBackgroundColor
-import com.alexc.ph.onealexapp.ui.theme.TodoInputBarFabColor
 
 
 @Composable
@@ -53,7 +50,7 @@ fun TodoInputBar(
     var enableAddButton by rememberSaveable { mutableStateOf(false) }
 
     Card(
-        shape = RoundedCornerShape(size = MediumDp),
+        shape = RoundedCornerShape(size = 4.dp),
         modifier = modifier
             .padding(MediumDp)
             .height(TodoInputBarHeight)
@@ -63,12 +60,12 @@ fun TodoInputBar(
         Row(
             modifier = modifier
                 .fillMaxSize()
-                .background(color = TodoInputBarBackgroundColor),
+                .background(color = MaterialTheme.colorScheme.primaryContainer),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TextField(
                 modifier = Modifier.weight(1f),
-                textStyle = TodoInputBarTextStyle,
+                textStyle = MaterialTheme.typography.labelMedium,
                 value = input,
                 onValueChange = { newText ->
                     input = newText
@@ -77,6 +74,7 @@ fun TodoInputBar(
                 placeholder = {
                     Text(
                         text = stringResource(id = R.string.todo_hint),
+                        style = MaterialTheme.typography.labelLarge.copy(color = MaterialTheme.colorScheme.primary),
                     )
                 },
                 singleLine = true,
@@ -91,8 +89,10 @@ fun TodoInputBar(
                     unfocusedIndicatorColor = Color.Transparent
                 )
             )
-            val addFabColor = if (enableAddButton) TodoInputBarFabColor else TodoInputBarFabColor.copy(alpha = 0.5f)
-            val addIconTint = if (enableAddButton) TodoInputBarBackgroundColor else TodoInputBarBackgroundColor.copy(alpha = 0.5f)
+            val fabColor = MaterialTheme.colorScheme.onPrimary
+            val iconTint = MaterialTheme.colorScheme.primary
+            val addFabColor = if (enableAddButton) fabColor else fabColor.copy(alpha = 0.5f)
+            val addIconTint = if (enableAddButton) iconTint else iconTint.copy(alpha = 0.5f)
             FloatingActionButton(
                 containerColor = addFabColor,
                 onClick = {

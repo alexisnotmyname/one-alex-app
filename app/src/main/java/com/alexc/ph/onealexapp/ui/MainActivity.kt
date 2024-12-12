@@ -16,7 +16,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val appState = rememberOneAlexAppState()
-            OneAlexAppTheme {
+            OneAlexAppTheme (
+                dynamicColor = false
+            ){
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

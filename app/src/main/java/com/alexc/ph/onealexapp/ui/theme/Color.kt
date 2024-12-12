@@ -218,14 +218,6 @@ val surfaceContainerHighDarkHighContrast = Color(0xFF272A2F)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF32353A)
 
 
-val TodoItemBackgroundColor = onPrimaryLight
-val TodoItemIconColor = secondaryLight
-val TodoItemTextColor = secondaryLight
-
-val TodoInputBarBackgroundColor = onPrimaryLight
-val TodoInputBarFabColor = primaryLight
-
-
 
 
 

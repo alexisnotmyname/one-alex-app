@@ -22,11 +22,13 @@ interface DataModule {
         todoListRepository: TodoListRepositoryImpl
     ): TodoListRepository
 
+    @Singleton
     @Binds
     abstract fun bindMoviesRepository(
         moviesRepositoryImpl: MoviesRepositoryImpl
     ): MoviesRepository
 
+    @Singleton
     @Binds
     abstract fun bindTvSeriesRepository(
         tvSeriesRepositoryImpl: TvSeriesRepositoryImpl

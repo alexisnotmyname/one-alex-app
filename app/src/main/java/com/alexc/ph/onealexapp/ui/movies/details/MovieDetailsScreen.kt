@@ -21,16 +21,16 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alexc.ph.domain.model.ContentItem
@@ -47,10 +47,8 @@ import com.alexc.ph.onealexapp.ui.components.GenericTopAppBar
 import com.alexc.ph.onealexapp.ui.components.LoadingScreen
 import com.alexc.ph.onealexapp.ui.constants.LargeDp
 import com.alexc.ph.onealexapp.ui.constants.MediumDp
-import com.alexc.ph.onealexapp.ui.constants.MovieOverviewBodyTextStyle
 import com.alexc.ph.onealexapp.ui.constants.SmallDp
 import com.alexc.ph.onealexapp.ui.constants.TOP_APP_BAR_HEIGHT_DP
-import com.alexc.ph.onealexapp.ui.constants.WatchNowButtonTextStyle
 import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
 import com.alexc.ph.onealexapp.ui.util.verticalGradientScrim
 
@@ -98,46 +96,40 @@ fun MovieDetailsScreen(
             modifier = modifier,
             contentAlignment = Alignment.Center
         ) {
-            when(content) {
+
+            val (backdropPath, posterPath, title) = when(content) {
                 is ContentItem.MovieItem -> {
-                    MovieBackground(
-                        imageUrl = content.movie.backdropPath,
-                        contentDescription = content.movie.title,
-                        modifier = modifier
-                            .fillMaxSize()
-                    )
-                    MovieDetailsContent(
-                        movie = content.movie,
-                        onWatchClick = onWatchClick,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(contentPadding)
-                    )
+                    Triple(content.movie.backdropPath, content.movie.posterPath, content.movie.title)
                 }
                 is ContentItem.TvSeriesItem -> {
-                    MovieBackground(
-                        imageUrl = content.tvSeries.backdropPath,
-                        contentDescription = content.tvSeries.title,
-                        modifier = modifier
-                            .fillMaxSize()
-                    )
-                    TvSeriesDetailsContent(
-                        tvSeries = content.tvSeries,
-                        onWatchClick = onWatchClick,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(contentPadding)
-                    )
+                    Triple(content.tvSeries.backdropPath, content.tvSeries.posterPath, content.tvSeries.title)
                 }
             }
+            MovieBackground(
+                imageUrl = backdropPath,
+                contentDescription = title,
+                modifier = modifier
+                    .fillMaxSize()
+            )
+            DetailsContent(
+                posterPath = posterPath,
+                title = title,
+                content = content,
+                onWatchClick = onWatchClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(contentPadding)
+            )
         }
     }
 }
 
 @Composable
-fun MovieDetailsContent(
+fun DetailsContent(
     modifier: Modifier = Modifier,
-    movie: Movie,
+    posterPath: String,
+    title: String,
+    content: ContentItem,
     onWatchClick: (title: String) -> Unit,
 ) {
     LazyColumn(
@@ -154,71 +146,38 @@ fun MovieDetailsContent(
         item {
             Spacer(modifier = Modifier.height(LargeDp))
             MoviePoster(
-                podcastImageUrl = movie.posterPath,
-                contentDescription = movie.title,
+                podcastImageUrl = posterPath,
+                contentDescription = title,
                 modifier = Modifier
                     .width(280.dp)
                     .aspectRatio(2 / 3f)
             )
-            Spacer(modifier = Modifier.height(MediumDp))
-            WatchButton(
-                title = movie.title,
-                onWatchClick = onWatchClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(MediumDp))
-            MovieDescription(
-                movie = movie,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(MediumDp)
-            )
-            Spacer(modifier = Modifier.height(SmallDp))
-        }
-    }
-}
-
-@Composable
-fun TvSeriesDetailsContent(
-    modifier: Modifier = Modifier,
-    tvSeries: TvSeries,
-    onWatchClick: (title: String) -> Unit
-) {
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalGradientScrim(
-                color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.50f),
-                startYPercentage = 0f,
-                endYPercentage = 1f
-            )
-            .systemBarsPadding(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        item {
             Spacer(modifier = Modifier.height(LargeDp))
-            MoviePoster(
-                podcastImageUrl = tvSeries.posterPath,
-                contentDescription = tvSeries.title,
-                modifier = Modifier
-                    .width(280.dp)
-                    .aspectRatio(2 / 3f)
-            )
-            Spacer(modifier = Modifier.height(MediumDp))
             WatchButton(
-                title = tvSeries.title,
+                title = title,
                 onWatchClick = onWatchClick,
                 modifier = Modifier
                     .fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(MediumDp))
-            TvSeriesDescription(
-                tvSeries = tvSeries,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(MediumDp)
-            )
+            when(content) {
+                is ContentItem.MovieItem -> {
+                    MovieDescription(
+                        movie = content.movie,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(MediumDp)
+                    )
+                }
+                is ContentItem.TvSeriesItem -> {
+                    TvSeriesDescription(
+                        tvSeries = content.tvSeries,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(MediumDp)
+                    )
+                }
+            }
+
             Spacer(modifier = Modifier.height(SmallDp))
         }
     }
@@ -253,19 +212,19 @@ fun WatchButton(
         onClick = { onWatchClick(title) },
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSurface),
         modifier = modifier
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = LargeDp)
             .height(48.dp)
     ) {
         Text(
             text = "Watch $title",
-            style = WatchNowButtonTextStyle,
+            style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.surface
         )
     }
 }
 
 @Composable
-fun MovieDetailsGenre(
+fun Genres(
     modifier: Modifier = Modifier,
     genres: List<Genre>
 ) {
@@ -279,7 +238,11 @@ fun MovieDetailsGenre(
                     .background(MaterialTheme.colorScheme.onSurface, RoundedCornerShape(4.dp))
                     .padding(4.dp)
             ) {
-                Text(text = genre.name, color = MaterialTheme.colorScheme.surface, fontSize = 12.sp)
+                Text(
+                    text = genre.name,
+                    color = MaterialTheme.colorScheme.surface,
+                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold)
+                )
             }
         }
     }
@@ -309,16 +272,28 @@ private fun MovieDescription(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
+        Spacer(modifier = Modifier.height(SmallDp))
+        Genres(modifier = Modifier, genres = movie.genres)
         Spacer(modifier = Modifier.height(MediumDp))
-        MovieDetailsGenre(modifier = Modifier, genres = movie.genres)
-        Spacer(modifier = Modifier.height(MediumDp))
-        MovieOtherInfo(
-            movie = movie,
-            modifier = Modifier.fillMaxWidth()
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = movie.releaseDate,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(MediumDp)
+            )
+
+            Text(
+                text = "${movie.runTime} min",
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(MediumDp)
+            )
+        }
         Text(
             text = movie.overview,
-            style = MovieOverviewBodyTextStyle,
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(MediumDp)
         )
     }
@@ -333,62 +308,29 @@ private fun TvSeriesDescription(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
+        Spacer(modifier = Modifier.height(SmallDp))
+        Genres(modifier = Modifier, genres = tvSeries.genres)
         Spacer(modifier = Modifier.height(MediumDp))
-        MovieDetailsGenre(modifier = Modifier, genres = tvSeries.genres)
-        Spacer(modifier = Modifier.height(MediumDp))
-        TvSeriesOtherInfo(
-            tvSeries = tvSeries,
-            modifier = Modifier.fillMaxWidth()
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = tvSeries.firstAirDate,
+                style = MaterialTheme.typography.bodyMedium,
+
+                modifier = Modifier.padding(SmallDp)
+            )
+
+            Text(
+                text = tvSeries.seasons.toSeasonString(),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(SmallDp)
+            )
+        }
         Text(
             text = tvSeries.overview,
-            style = MovieOverviewBodyTextStyle,
-            modifier = Modifier.padding(MediumDp)
-        )
-    }
-}
-
-@Composable
-private fun MovieOtherInfo(
-    modifier: Modifier = Modifier,
-    movie: Movie
-) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = movie.releaseDate,
-            style = MovieOverviewBodyTextStyle,
-            modifier = Modifier.padding(MediumDp)
-        )
-
-        Text(
-            text = "${movie.runTime} min",
-            style = MovieOverviewBodyTextStyle,
-            modifier = Modifier.padding(MediumDp)
-        )
-    }
-}
-
-@Composable
-private fun TvSeriesOtherInfo(
-    modifier: Modifier = Modifier,
-    tvSeries: TvSeries
-) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = tvSeries.firstAirDate,
-            style = MovieOverviewBodyTextStyle,
-            modifier = Modifier.padding(MediumDp)
-        )
-
-        Text(
-            text = tvSeries.seasons.toSeasonString(),
-            style = MovieOverviewBodyTextStyle,
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(MediumDp)
         )
     }
@@ -397,7 +339,7 @@ private fun TvSeriesOtherInfo(
 @Preview
 @Composable
 fun MovieDetailsPreview() {
-    OneAlexAppTheme {
+    OneAlexAppTheme(dynamicColor = false) {
         val movie = Movie(
             id = 0,
             title = "Dummy Title 1",
@@ -411,6 +353,19 @@ fun MovieDetailsPreview() {
             runTime = 100
         )
 
+        Surface {
+            MovieDetailsScreen(
+                content = ContentItem.MovieItem(movie),
+                modifier = Modifier
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun TvSeriesDetailsPreview() {
+    OneAlexAppTheme(dynamicColor = false) {
         val tvSeries = TvSeries(
             id = 0,
             title = "Dummy Title 1",
@@ -422,12 +377,15 @@ fun MovieDetailsPreview() {
             ),
             firstAirDate = "2024-10-13",
             seasons = listOf(
-                Season(0, "Season 1"),Season(1, "Season 2")
+                Season(0, "Season 1"), Season(1, "Season 2")
             )
         )
-        MovieDetailsScreen(
-            content = ContentItem.TvSeriesItem(tvSeries),
-            modifier = Modifier
-        )
+
+        Surface {
+            MovieDetailsScreen(
+                content = ContentItem.TvSeriesItem(tvSeries),
+                modifier = Modifier
+            )
+        }
     }
 }

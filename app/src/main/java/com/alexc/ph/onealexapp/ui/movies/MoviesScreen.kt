@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,7 +45,6 @@ import com.alexc.ph.onealexapp.ui.components.OneAlexAppIcons.Forward
 import com.alexc.ph.onealexapp.ui.constants.LargeDp
 import com.alexc.ph.onealexapp.ui.constants.MOVIE_IMAGE_SIZE_DP
 import com.alexc.ph.onealexapp.ui.constants.MediumDp
-import com.alexc.ph.onealexapp.ui.constants.MovieHeaderTextStyle
 import com.alexc.ph.onealexapp.ui.constants.SmallDp
 import com.alexc.ph.onealexapp.ui.constants.XLargeDp
 import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
@@ -81,7 +81,7 @@ fun MoviesScreen(
     onCategoryClicked: (Category) -> Unit = {}
 ) {
     LazyColumn(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
     ) {
         movieItems(
             movies = content.movies.popular,
@@ -165,7 +165,7 @@ fun MovieHeaderContent(
     ) {
         Text(
             text = headerTitle,
-            style = MovieHeaderTextStyle
+            style = MaterialTheme.typography.titleMedium
         )
         Icon(
             imageVector = Forward,
@@ -229,56 +229,49 @@ fun MovieItem(
                 contentScale = ContentScale.FillBounds
             )
         }
-//        Text(
-//            text = title,
-//            style = MovieTitleTextStyle,
-//            maxLines = 2,
-//            overflow = TextOverflow.Ellipsis,
-//            modifier = Modifier
-//                .padding(top = SmallDp, start = MediumDp)
-//                .align(Alignment.Start)
-//        )
     }
 }
 
 @Preview
 @Composable
 fun MovieScreenPreview() {
+    val popularMovies = listOf(
+        Movie(id = 0, title = "popular movie  1"),
+        Movie(id = 1, title = "popular movie 2"),
+        Movie(id = 2, title = "popular movie 3"),
+        Movie(id = 3, title = "popular movie 4")
+    )
+
+    val nowPlayingMovies = listOf(
+        Movie(id = 0, title = "nowplaying movie  1"),
+        Movie(id = 1, title = "nowplaying movie 2"),
+        Movie(id = 2, title = "nowplaying movie 3"),
+        Movie(id = 3, title = "nowplaying movie 4")
+    )
+
+    val popularSeries = listOf(
+        TvSeries(id = 0, title = "popular series 1"),
+        TvSeries(id = 1, title = "popular series 2"),
+        TvSeries(id = 2, title = "popular series 3"),
+        TvSeries(id = 3, title = "popular series 4")
+    )
+
+    val nowPlayingSeries = listOf(
+        TvSeries(id = 0, title = "nowplaying series 1"),
+        TvSeries(id = 1, title = "nowplaying series 2"),
+        TvSeries(id = 2, title = "nowplaying series 3"),
+        TvSeries(id = 3, title = "nowplaying series 4")
+    )
+    val combinedMoviesAndTvSeries = CombinedMoviesAndSeries(
+        movies = CombinedMovies(nowPlayingMovies, popularMovies),
+        tvSeries = CombinedTvSeries(nowPlayingSeries, popularSeries)
+    )
     OneAlexAppTheme {
-        val popularMovies = listOf(
-            Movie(id = 0, title = "popular movie  1"),
-            Movie(id = 1, title = "popular movie 2"),
-            Movie(id = 2, title = "popular movie 3"),
-            Movie(id = 3, title = "popular movie 4")
-        )
-
-        val nowPlayingMovies = listOf(
-            Movie(id = 0, title = "nowplaying movie  1"),
-            Movie(id = 1, title = "nowplaying movie 2"),
-            Movie(id = 2, title = "nowplaying movie 3"),
-            Movie(id = 3, title = "nowplaying movie 4")
-        )
-
-        val popularSeries = listOf(
-            TvSeries(id = 0, title = "popular series 1"),
-            TvSeries(id = 1, title = "popular series 2"),
-            TvSeries(id = 2, title = "popular series 3"),
-            TvSeries(id = 3, title = "popular series 4")
-        )
-
-        val nowPlayingSeries = listOf(
-            TvSeries(id = 0, title = "nowplaying series 1"),
-            TvSeries(id = 1, title = "nowplaying series 2"),
-            TvSeries(id = 2, title = "nowplaying series 3"),
-            TvSeries(id = 3, title = "nowplaying series 4")
-        )
-        val combinedMoviesAndTvSeries = CombinedMoviesAndSeries(
-            movies = CombinedMovies(nowPlayingMovies, popularMovies),
-            tvSeries = CombinedTvSeries(nowPlayingSeries, popularSeries)
-        )
-        MoviesScreen(
-            content = combinedMoviesAndTvSeries
-        )
+        Surface {
+            MoviesScreen(
+                content = combinedMoviesAndTvSeries
+            )
+        }
     }
 }
 
@@ -286,9 +279,11 @@ fun MovieScreenPreview() {
 @Composable
 fun MovieItemPreview() {
     OneAlexAppTheme {
-        MovieItem(
-            imageUrl = "imageUrl",
-            title = "Sample Title",
-        )
+        Surface {
+            MovieItem(
+                imageUrl = "imageUrl",
+                title = "Sample Title",
+            )
+        }
     }
 }

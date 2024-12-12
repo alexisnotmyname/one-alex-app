@@ -36,28 +36,28 @@ import com.alexc.ph.onealexapp.ui.constants.LargeDp
 import com.alexc.ph.onealexapp.ui.constants.MediumDp
 import com.alexc.ph.onealexapp.ui.constants.TodoItemHeight
 import com.alexc.ph.onealexapp.ui.constants.TodoItemIconSize
-import com.alexc.ph.onealexapp.ui.constants.TodoItemTitleTextStyle
 import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
-import com.alexc.ph.onealexapp.ui.theme.TodoItemBackgroundColor
-import com.alexc.ph.onealexapp.ui.theme.TodoItemIconColor
-import com.alexc.ph.onealexapp.ui.theme.TodoItemTextColor
 import com.alexc.ph.onealexapp.ui.theme.shapes
 
 
 @Composable
-fun TodoItemUi(
+fun TodoItem(
     modifier: Modifier = Modifier,
     item: TodoItem,
     onItemClick: (TodoItem) -> Unit = {},
     onItemDelete: (TodoItem) -> Unit = {}
 ) {
 
-    val backgroundColor = if (item.isDone) TodoItemBackgroundColor.copy(alpha = 0.5f) else TodoItemBackgroundColor
-    val textColor = if (item.isDone) TodoItemTextColor.copy(alpha = 0.5f) else TodoItemTextColor
+    val containerColor = MaterialTheme.colorScheme.primaryContainer
+    val contentColor = MaterialTheme.colorScheme.primary
+
+    val backgroundColor = if (item.isDone) containerColor.copy(alpha = 0.5f) else containerColor
+    val textColor = if (item.isDone) contentColor.copy(alpha = 0.5f) else contentColor
     val textDecoration = if (item.isDone) TextDecoration.LineThrough else null
     val iconId = if (item.isDone) Icons.Default.CheckBox else Icons.Default.CheckBoxOutlineBlank
-    val iconColorFilter = if (item.isDone) ColorFilter.tint(TodoItemIconColor.copy(alpha = 0.5f)) else ColorFilter.tint(TodoItemIconColor)
-    val iconTintColor = if (item.isDone) TodoItemIconColor.copy(alpha = 0.5f) else TodoItemIconColor
+    val iconColorFilter = if (item.isDone) ColorFilter.tint(contentColor.copy(alpha = 0.5f)) else ColorFilter.tint(contentColor)
+    val iconTintColor = if (item.isDone) contentColor.copy(alpha = 0.5f) else contentColor
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -88,8 +88,8 @@ fun TodoItemUi(
             Text(
                 text = item.title,
                 modifier = Modifier.weight(1f),
-                style = TodoItemTitleTextStyle.copy(color = textColor),
-                maxLines = 1,
+                style = MaterialTheme.typography.labelLarge.copy(color = textColor),
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 textDecoration = textDecoration
             )
@@ -120,7 +120,7 @@ fun TodoItemUi(
 @Composable
 fun ToDoItemUiPreview() {
     OneAlexAppTheme {
-        TodoItemUi(
+        TodoItem(
             modifier = Modifier,
             item = TodoItem(1, "Learn Compose", false, order = 0)
         )

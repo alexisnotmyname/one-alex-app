@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.alexc.ph.onealexapp.ui.todolist
 
@@ -36,7 +21,6 @@ import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
 
 @Composable
 fun MyTodoListScreen(
-    modifier: Modifier = Modifier,
     todoViewModel: TodoListViewModel = hiltViewModel()
 ) {
     val items by todoViewModel.uiState.collectAsStateWithLifecycle()
@@ -44,7 +28,8 @@ fun MyTodoListScreen(
         val todoList = (items as TodoListUiState.Success).todoList
         val currentDate = todoViewModel.getCurrentDate()
         MyTodoListScreen(
-            modifier = modifier,
+            modifier = Modifier
+                .fillMaxSize(),
             dateToday = currentDate,
             todoList = todoList,
             onItemClick = todoViewModel::toggleTodo,
@@ -68,15 +53,10 @@ fun MyTodoListScreen(
     onAddButtonClick: (todo: String) -> Unit = {},
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
     ) {
-        ToDoListHeader(
-            modifier = Modifier.fillMaxWidth(),
-            dateToday = dateToday
-        )
         Box(
-            modifier = modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             DraggableLazyColumn(
                 modifier = Modifier.fillMaxWidth(),
@@ -85,7 +65,7 @@ fun MyTodoListScreen(
                 onItemDraggedEnd = onItemDraggedEnd,
                 overlappingElementsHeight = OverlappingHeight
             ) { item, _ ->
-                TodoItemUi(
+                TodoItem(
                     modifier = Modifier,
                     item = item,
                     onItemClick = onItemClick,
