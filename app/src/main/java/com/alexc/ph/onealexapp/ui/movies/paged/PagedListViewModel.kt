@@ -9,8 +9,9 @@ import androidx.paging.cachedIn
 import com.alexc.ph.domain.GetPagedContentUseCase
 import com.alexc.ph.domain.model.BaseContent
 import com.alexc.ph.domain.model.Category
-import com.alexc.ph.onealexapp.ui.movies.paged.PagedListUiState.*
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.alexc.ph.onealexapp.ui.movies.paged.PagedListUiState.Error
+import com.alexc.ph.onealexapp.ui.movies.paged.PagedListUiState.Loading
+import com.alexc.ph.onealexapp.ui.movies.paged.PagedListUiState.Success
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,10 +22,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class PagedListViewModel @Inject constructor(
+class PagedListViewModel(
     savedStateHandle: SavedStateHandle,
     val getPagedContentUseCase: GetPagedContentUseCase
 ): ViewModel() {

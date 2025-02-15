@@ -7,7 +7,6 @@ import com.alexc.ph.domain.repository.TodoListRepository
 import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Error
 import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Loading
 import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Success
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,10 +17,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import javax.inject.Inject
 
-@HiltViewModel
-class TodoListViewModel@Inject constructor(
+class TodoListViewModel(
     private val todoListRepository: TodoListRepository
 ): ViewModel() {
 

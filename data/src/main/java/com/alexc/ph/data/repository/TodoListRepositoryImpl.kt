@@ -7,10 +7,9 @@ import com.alexc.ph.domain.model.TodoItem
 import com.alexc.ph.domain.repository.TodoListRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 
-class TodoListRepositoryImpl @Inject constructor(
+class TodoListRepositoryImpl(
     private val todoListDao: TodoListDao
 ): TodoListRepository {
     override val myTodoList: Flow<List<TodoItem>> = todoListDao.getAllTodoList().map {

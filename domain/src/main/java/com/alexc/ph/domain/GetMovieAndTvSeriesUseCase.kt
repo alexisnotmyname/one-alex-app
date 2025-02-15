@@ -10,9 +10,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
-import javax.inject.Inject
 
-class GetMovieAndTvSeriesUseCase @Inject constructor(
+class GetMovieAndTvSeriesUseCase(
     private val moviesRepository: MoviesRepository,
     private val tvSeriesRepository: TvSeriesRepository
 ) {

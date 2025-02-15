@@ -31,7 +31,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alexc.ph.domain.model.ContentItem
 import com.alexc.ph.domain.model.ContentType
@@ -51,12 +50,13 @@ import com.alexc.ph.onealexapp.ui.constants.SmallDp
 import com.alexc.ph.onealexapp.ui.constants.TOP_APP_BAR_HEIGHT_DP
 import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
 import com.alexc.ph.onealexapp.ui.util.verticalGradientScrim
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MovieDetailsScreen(
     navigateBack: () -> Unit,
     onWatchClick: (title: String) -> Unit,
-    viewModel: MovieDetailsViewModel = hiltViewModel(),
+    viewModel: MovieDetailsViewModel = koinViewModel(),
 ) {
     val movieDetailsUiState by viewModel.moviesUiState.collectAsStateWithLifecycle()
     when(movieDetailsUiState) {

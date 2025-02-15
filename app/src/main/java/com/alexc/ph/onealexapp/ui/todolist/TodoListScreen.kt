@@ -12,22 +12,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alexc.ph.domain.model.TodoItem
 import com.alexc.ph.onealexapp.ui.components.DraggableLazyColumn
 import com.alexc.ph.onealexapp.ui.constants.OverlappingHeight
-import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MyTodoListScreen(
-    todoViewModel: TodoListViewModel = hiltViewModel()
+fun TodoListRoot(
+    todoViewModel: TodoListViewModel = koinViewModel()
 ) {
     val items by todoViewModel.uiState.collectAsStateWithLifecycle()
     if (items is TodoListUiState.Success) {
         val todoList = (items as TodoListUiState.Success).todoList
         val currentDate = todoViewModel.getCurrentDate()
-        MyTodoListScreen(
+        TodoListScreen(
             modifier = Modifier
                 .fillMaxSize(),
             dateToday = currentDate,
@@ -42,7 +41,7 @@ fun MyTodoListScreen(
 }
 
 @Composable
-fun MyTodoListScreen(
+fun TodoListScreen(
     modifier: Modifier = Modifier,
     dateToday: String = "",
     todoList: List<TodoItem>,
@@ -89,9 +88,7 @@ private fun DefaultPreview() {
         TodoItem(2, "Learn Room", false, 2),
         TodoItem(3, "Learn Kotlin", true, 3)
     )
-    OneAlexAppTheme  {
-        MyTodoListScreen(modifier = Modifier, dateToday = "Sept 24 - Wednesday", todoList = list)
-    }
+    TodoListScreen(modifier = Modifier, dateToday = "Sept 24 - Wednesday", todoList = list)
 }
 
 @Preview(showBackground = true, widthDp = 480)
@@ -102,7 +99,5 @@ private fun PortraitPreview() {
         TodoItem(2, "Learn Room", false, 2),
         TodoItem(3, "Learn Kotlin", true, 3)
     )
-    OneAlexAppTheme {
-        MyTodoListScreen(modifier = Modifier, dateToday = "Sept 24 - Wednesday", todoList = list)
-    }
+    TodoListScreen(modifier = Modifier, dateToday = "Sept 24 - Wednesday", todoList = list)
 }

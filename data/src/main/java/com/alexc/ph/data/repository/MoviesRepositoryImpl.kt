@@ -5,16 +5,15 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.alexc.ph.data.network.datasource.MovieDataSource
 import com.alexc.ph.data.network.model.toMovie
-import com.alexc.ph.domain.model.Result
 import com.alexc.ph.data.repository.paging.NowPlayingMoviesPagingSource
 import com.alexc.ph.data.repository.paging.PopularMoviesPagingSource
 import com.alexc.ph.domain.model.Movie
+import com.alexc.ph.domain.model.Result
 import com.alexc.ph.domain.repository.MoviesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
-class MoviesRepositoryImpl @Inject constructor(
+class MoviesRepositoryImpl(
     private val movieDataSource: MovieDataSource
 ) : MoviesRepository {
 

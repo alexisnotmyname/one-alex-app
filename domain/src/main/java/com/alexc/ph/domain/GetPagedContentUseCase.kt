@@ -8,9 +8,8 @@ import com.alexc.ph.domain.repository.MoviesRepository
 import com.alexc.ph.domain.repository.TvSeriesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class GetPagedContentUseCase @Inject constructor(
+class GetPagedContentUseCase(
     private val moviesRepository: MoviesRepository,
     private val tvSeriesRepository: TvSeriesRepository
 ) {

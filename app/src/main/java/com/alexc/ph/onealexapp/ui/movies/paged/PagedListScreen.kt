@@ -16,7 +16,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -28,13 +27,14 @@ import com.alexc.ph.onealexapp.ui.constants.MOVIE_IMAGE_SIZE_DP
 import com.alexc.ph.onealexapp.ui.constants.MediumDp
 import com.alexc.ph.onealexapp.ui.constants.TOP_APP_BAR_HEIGHT_DP
 import com.alexc.ph.onealexapp.ui.movies.MovieItem
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PagedListScreen(
     modifier: Modifier = Modifier,
     navigateBack: () -> Unit = {},
     navigateToMovieDetails: (BaseContent) -> Unit,
-    viewModel: PagedListViewModel = hiltViewModel()
+    viewModel: PagedListViewModel = koinViewModel()
 ) {
     val pagedListUiState by viewModel.pagedListUiState.collectAsStateWithLifecycle()
     val content = viewModel.moviesPaged.collectAsLazyPagingItems()

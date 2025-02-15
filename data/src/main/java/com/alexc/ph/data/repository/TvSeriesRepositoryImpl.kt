@@ -4,18 +4,16 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.alexc.ph.data.network.datasource.MovieDataSource
-import com.alexc.ph.data.network.model.TvSeriesResponse
 import com.alexc.ph.data.network.model.toTvSeries
-import com.alexc.ph.domain.model.Result
 import com.alexc.ph.data.repository.paging.PopularTvSeriesPagingSource
 import com.alexc.ph.data.repository.paging.TopRatedTvSeriesPagingSource
+import com.alexc.ph.domain.model.Result
 import com.alexc.ph.domain.model.TvSeries
 import com.alexc.ph.domain.repository.TvSeriesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
-class TvSeriesRepositoryImpl @Inject constructor(
+class TvSeriesRepositoryImpl(
     private val moviesDataSource: MovieDataSource
 ): TvSeriesRepository {
     override fun getTvSeries(id: Int): Flow<Result<TvSeries>> = flow {
