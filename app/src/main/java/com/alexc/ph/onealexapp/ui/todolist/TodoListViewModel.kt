@@ -38,33 +38,46 @@ class TodoListViewModel(
         }
     }
 
-    fun addTodo(todo: String) = viewModelScope.launch {
-            todoListRepository.add(TodoItem(title = todo, order = _todoList.value.size))
+    fun onAction(action: TodoListAction) {
+        when(action) {
+            is TodoListAction.OnAddTodo -> {
+                val newTodo = TodoItem(title = action.todo, order = _todoList.value.size)
+                viewModelScope.launch {
+                    todoListRepository.add(newTodo)
+                }
+            }
+            is TodoListAction.OnRemoveTodo -> {
+                viewModelScope.launch {
+                    todoListRepository.delete(action.todo)
+                }
+            }
+            is TodoListAction.OnToggleTodo -> {
+                viewModelScope.launch {
+                    val updated = action.todo.copy(isDone = !action.todo.isDone)
+                    todoListRepository.update(updated)
+                }
+            }
+            is TodoListAction.OnStoppedEditing -> {
+                viewModelScope.launch {
+                    val updated = action.todo.copy(title = action.newTitle)
+                    todoListRepository.update(updated)
+                }
+            }
+            is TodoListAction.OnTodoItemDragged -> {
+                if(_todoList.value[action.fromIndex].isDone) return
+                val updatedList = _todoList.value.toMutableList().apply {
+                    add(action.toIndex, removeAt(action.fromIndex))
+                }.mapIndexed { index, todoItem ->
+                    todoItem.copy(order = index)
+                }
+                _todoList.value = updatedList
+            }
+            TodoListAction.OnTodoItemDraggedEnd -> {
+                viewModelScope.launch {
+                    todoListRepository.updateTodoItems(_todoList.value)
+                }
+            }
         }
-
-    fun toggleTodo(todo: TodoItem) = viewModelScope.launch {
-            val todoEntity = todo.copy(isDone = !todo.isDone)
-            todoListRepository.update(todoEntity)
-        }
-
-    fun removeTodo(todo: TodoItem) = viewModelScope.launch {
-            todoListRepository.delete(todo)
-        }
-
-    fun updateTodoList() = viewModelScope.launch {
-        val todoEntityList = _todoList.value
-        todoListRepository.updateTodoItems(todoEntityList)
-    }
-
-    fun reorderTodoList(draggedIndex: Int, targetIndex: Int) {
-        if(_todoList.value[draggedIndex].isDone) return
-        val updatedList = _todoList.value.toMutableList().apply {
-            val itemToMove = removeAt(draggedIndex)
-            add(targetIndex, itemToMove)
-        }.mapIndexed { index, todoItem ->
-            todoItem.copy(order = index)
-        }
-        _todoList.value = updatedList
     }
 
     fun getCurrentDate(): String {

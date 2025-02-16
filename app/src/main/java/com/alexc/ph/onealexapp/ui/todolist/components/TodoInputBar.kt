@@ -1,4 +1,4 @@
-package com.alexc.ph.onealexapp.ui.todolist
+package com.alexc.ph.onealexapp.ui.todolist.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -81,10 +81,7 @@ fun TodoInputBar(
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
-                    cursorColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    disabledTextColor = Color.White,
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
+                    disabledContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
                 )

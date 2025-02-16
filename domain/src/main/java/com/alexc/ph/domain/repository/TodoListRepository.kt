@@ -7,6 +7,6 @@ interface TodoListRepository {
     val myTodoList: Flow<List<TodoItem>>
     suspend fun add(todoEntity: TodoItem)
     suspend fun update(todoEntity: TodoItem)
-    suspend fun updateTodoItems(todos: List<TodoItem>)
+    suspend fun updateTodoItems(todoList: List<TodoItem>)
     suspend fun delete(todoEntity: TodoItem)
 }

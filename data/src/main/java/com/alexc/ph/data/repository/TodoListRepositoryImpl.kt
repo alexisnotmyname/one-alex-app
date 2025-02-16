@@ -24,8 +24,8 @@ class TodoListRepositoryImpl(
         todoListDao.updateTodo(todoEntity.toTodoEntity())
     }
 
-    override suspend fun updateTodoItems(todoEntities: List<TodoItem>) {
-        val todos = todoEntities.map { it.toTodoEntity() }
+    override suspend fun updateTodoItems(todoList: List<TodoItem>) {
+        val todos = todoList.map { it.toTodoEntity() }
         todoListDao.updateTodoItems(todos)
     }
 

@@ -3,19 +3,31 @@ package com.alexc.ph.onealexapp.ui.todolist
 
 
 import android.content.res.Configuration
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alexc.ph.domain.model.TodoItem
-import com.alexc.ph.onealexapp.ui.components.DraggableLazyColumn
-import com.alexc.ph.onealexapp.ui.constants.OverlappingHeight
+import com.alexc.ph.onealexapp.ui.todolist.components.DraggableItem
+import com.alexc.ph.onealexapp.ui.todolist.components.TodoInputBar
+import com.alexc.ph.onealexapp.ui.todolist.components.TodoItem
+import com.alexc.ph.onealexapp.ui.todolist.components.dragContainer
+import com.alexc.ph.onealexapp.ui.todolist.components.rememberDragDropState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -25,17 +37,11 @@ fun TodoListRoot(
     val items by todoViewModel.uiState.collectAsStateWithLifecycle()
     if (items is TodoListUiState.Success) {
         val todoList = (items as TodoListUiState.Success).todoList
-        val currentDate = todoViewModel.getCurrentDate()
         TodoListScreen(
             modifier = Modifier
                 .fillMaxSize(),
-            dateToday = currentDate,
             todoList = todoList,
-            onItemClick = todoViewModel::toggleTodo,
-            onItemDelete = todoViewModel::removeTodo,
-            onItemDragged = todoViewModel::reorderTodoList,
-            onItemDraggedEnd = todoViewModel::updateTodoList,
-            onAddButtonClick = todoViewModel::addTodo
+            onAction = todoViewModel::onAction,
         )
     }
 }
@@ -43,38 +49,68 @@ fun TodoListRoot(
 @Composable
 fun TodoListScreen(
     modifier: Modifier = Modifier,
-    dateToday: String = "",
     todoList: List<TodoItem>,
-    onItemClick: (item: TodoItem) -> Unit = {},
-    onItemDelete: (item: TodoItem) -> Unit = {},
-    onItemDragged: (draggedIndex: Int, targetIndex: Int) -> Unit = {_, _ ->},
-    onItemDraggedEnd: () -> Unit = {},
-    onAddButtonClick: (todo: String) -> Unit = {},
+    onAction: (TodoListAction) -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
     Column(
         modifier = modifier
     ) {
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = { focusManager.clearFocus() })
+                }
         ) {
-            DraggableLazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-                todoItems = todoList,
-                onItemDragged = onItemDragged,
-                onItemDraggedEnd = onItemDraggedEnd,
-                overlappingElementsHeight = OverlappingHeight
-            ) { item, _ ->
-                TodoItem(
-                    modifier = Modifier,
-                    item = item,
-                    onItemClick = onItemClick,
-                    onItemDelete = onItemDelete
+
+            val listState = rememberLazyListState()
+            val dragDropState =
+                rememberDragDropState(
+                    lazyListState = listState,
+                    onMove = { fromIndex, toIndex ->
+                        onAction(TodoListAction.OnTodoItemDragged(fromIndex, toIndex))
+                    },
+                    onDragEnd = {
+                        onAction(TodoListAction.OnTodoItemDraggedEnd)
+                    }
                 )
+
+            LazyColumn(
+                modifier = Modifier.dragContainer(dragDropState),
+                state = listState,
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                itemsIndexed(todoList, key = { _, item -> item.id }) { index, item ->
+                    DraggableItem(dragDropState, index) { isDragging ->
+                        val elevation by animateDpAsState(if (isDragging) 4.dp else 1.dp, label = "")
+                        TodoItem(
+                            modifier = Modifier,
+                            item = item,
+                            elevation = elevation,
+                            onCheckedChanged = { todo ->
+                                onAction(TodoListAction.OnToggleTodo(todo))
+                            },
+                            onStoppedEditing = { todo, newTitle ->
+                                onAction(TodoListAction.OnStoppedEditing(todo, newTitle))
+                            },
+                            onItemDelete = { todo ->
+                                onAction(TodoListAction.OnRemoveTodo(todo))
+                            },
+                            onMoreClicked = { todo ->
+
+                            }
+                        )
+                    }
+                }
             }
+
             TodoInputBar(
-                modifier = Modifier
-                    .align(Alignment.BottomStart),
-                onAddButtonClick = onAddButtonClick
+                modifier = Modifier.align(Alignment.BottomStart),
+                onAddButtonClick = { todo ->
+                    onAction(TodoListAction.OnAddTodo(todo))
+                }
             )
         }
     }
@@ -88,7 +124,12 @@ private fun DefaultPreview() {
         TodoItem(2, "Learn Room", false, 2),
         TodoItem(3, "Learn Kotlin", true, 3)
     )
-    TodoListScreen(modifier = Modifier, dateToday = "Sept 24 - Wednesday", todoList = list)
+    TodoListScreen(
+        modifier = Modifier,
+        todoList = list,
+        onAction = {},
+
+    )
 }
 
 @Preview(showBackground = true, widthDp = 480)
@@ -99,5 +140,9 @@ private fun PortraitPreview() {
         TodoItem(2, "Learn Room", false, 2),
         TodoItem(3, "Learn Kotlin", true, 3)
     )
-    TodoListScreen(modifier = Modifier, dateToday = "Sept 24 - Wednesday", todoList = list)
+    TodoListScreen(
+        modifier = Modifier,
+        todoList = list,
+        onAction = {},
+    )
 }
