@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">One Alex</string>
 
-    <string name="todo">To Do List</string>
+    <string name="todo">TO DO</string>
     <string name="todo_hint">List item</string>
-    <string name="movies">Movies</string>
+    <string name="movies">MOVIES</string>
     <string name="empty_screen_title">Screen under construction</string>
     <string name="empty_screen_subtitle">This screen is still under construction.</string>
     <string name="settings">Settings</string>

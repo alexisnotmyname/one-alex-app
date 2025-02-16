@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -30,11 +29,13 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.alexc.ph.onealexapp.R
+import com.alexc.ph.onealexapp.ui.components.GradientBackground
 import com.alexc.ph.onealexapp.ui.components.OneAlexAppIcons
 import com.alexc.ph.onealexapp.ui.components.OneAlexTopAppBar
 import com.alexc.ph.onealexapp.ui.navigation.OneAlexNavHost
 import com.alexc.ph.onealexapp.ui.navigation.OneAlexNavigationSuiteScaffold
 import com.alexc.ph.onealexapp.ui.settings.SettingsDialog
+import com.alexc.ph.onealexapp.ui.theme.LocalGradientColors
 import kotlin.reflect.KClass
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,54 +83,57 @@ fun OneAlexApp(
         },
         windowAdaptiveInfo = windowAdaptiveInfo,
     ) {
-        Scaffold(
-            modifier = modifier,
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onBackground,
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        ) { innerPadding ->
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .consumeWindowInsets(innerPadding)
-                    .windowInsetsPadding(
-                        WindowInsets.safeDrawing.only(
-                            WindowInsetsSides.Horizontal,
+        GradientBackground (
+            gradientColors = LocalGradientColors.current
+        ){
+            Scaffold(
+                modifier = modifier,
+                containerColor = Color.Transparent,
+                contentWindowInsets = WindowInsets(0, 0, 0, 0),
+            ) { innerPadding ->
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .consumeWindowInsets(innerPadding)
+                        .windowInsetsPadding(
+                            WindowInsets.safeDrawing.only(
+                                WindowInsetsSides.Horizontal,
+                            ),
                         ),
-                    ),
-            ) {
-                val destination = appState.currentTopLevelDestination
-                var shouldShowTopAppBar = false
-
-                if (destination != null) {
-                    shouldShowTopAppBar = true
-                    OneAlexTopAppBar(
-                        titleRes = destination.titleTextId,
-                        navigationIcon = OneAlexAppIcons.Search,
-                        navigationIconContentDescription = stringResource(id = R.string.search,),
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
-                        onNavigationClick = { // TODO add search
-                        }
-                    )
-                }
-
-                Box(
-                    modifier = Modifier.consumeWindowInsets(
-                        if (shouldShowTopAppBar) {
-                            WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
-                        } else {
-                            WindowInsets(0, 0, 0, 0)
-                        },
-                    ),
                 ) {
-                    OneAlexNavHost(
-                        appState = appState,
-                        navigateToMovieDetails = appState::navigateToMovieDetails,
-                        navigateToPagedList = appState::navigateToPagedList,
-                        navigateBack = appState::navigateBack,
-                        onWatchClick = appState::watch,
-                    )
+                    val destination = appState.currentTopLevelDestination
+                    var shouldShowTopAppBar = false
+
+                    if (destination != null) {
+                        shouldShowTopAppBar = true
+                        OneAlexTopAppBar(
+                            titleRes = destination.titleTextId,
+                            navigationIcon = OneAlexAppIcons.Search,
+                            navigationIconContentDescription = stringResource(id = R.string.search,),
+                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
+                            onNavigationClick = { // TODO add search
+                            }
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier.consumeWindowInsets(
+                            if (shouldShowTopAppBar) {
+                                WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
+                            } else {
+                                WindowInsets(0, 0, 0, 0)
+                            },
+                        ),
+                    ) {
+                        OneAlexNavHost(
+                            appState = appState,
+                            navigateToMovieDetails = appState::navigateToMovieDetails,
+                            navigateToPagedList = appState::navigateToPagedList,
+                            navigateBack = appState::navigateBack,
+                            onWatchClick = appState::watch,
+                        )
+                    }
                 }
             }
         }
