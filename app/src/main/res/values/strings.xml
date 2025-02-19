@@ -19,4 +19,5 @@
     <string name="now_playing_movies">Now Playing Movies</string>
     <string name="popular_series">Popular Series</string>
     <string name="top_rated_series">Top Rated Series</string>
+    <string name="add_new_item">New task</string>
 </resources>

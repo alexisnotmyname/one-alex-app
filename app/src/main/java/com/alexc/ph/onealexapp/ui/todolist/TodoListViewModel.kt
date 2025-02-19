@@ -15,11 +15,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class TodoListViewModel(
-    private val todoListRepository: TodoListRepository
+    private val todoListRepository: TodoListRepository,
 ): ViewModel() {
 
     private var _todoList = MutableStateFlow<List<TodoItem>>(emptyList())
@@ -41,7 +39,7 @@ class TodoListViewModel(
     fun onAction(action: TodoListAction) {
         when(action) {
             is TodoListAction.OnAddTodo -> {
-                val newTodo = TodoItem(title = action.todo, order = _todoList.value.size)
+                val newTodo = action.todo.copy(order = _todoList.value.size)
                 viewModelScope.launch {
                     todoListRepository.add(newTodo)
                 }
@@ -77,13 +75,12 @@ class TodoListViewModel(
                     todoListRepository.updateTodoItems(_todoList.value)
                 }
             }
+            is TodoListAction.OnEditTodo -> {
+                viewModelScope.launch {
+                    todoListRepository.update(action.todo)
+                }
+            }
         }
-    }
-
-    fun getCurrentDate(): String {
-        val currentDate = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("MMM dd - EEEE")
-        return currentDate.format(formatter)
     }
 }
 

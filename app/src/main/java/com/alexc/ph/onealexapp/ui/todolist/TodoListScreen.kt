@@ -9,12 +9,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -23,7 +33,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alexc.ph.domain.model.TodoItem
+import com.alexc.ph.onealexapp.ui.constants.OverlappingHeight
 import com.alexc.ph.onealexapp.ui.todolist.components.DraggableItem
+import com.alexc.ph.onealexapp.ui.todolist.components.NewTaskScreen
 import com.alexc.ph.onealexapp.ui.todolist.components.TodoInputBar
 import com.alexc.ph.onealexapp.ui.todolist.components.TodoItem
 import com.alexc.ph.onealexapp.ui.todolist.components.dragContainer
@@ -46,12 +58,18 @@ fun TodoListRoot(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoListScreen(
     modifier: Modifier = Modifier,
     todoList: List<TodoItem>,
     onAction: (TodoListAction) -> Unit,
 ) {
+    var showModalBottomSheet by rememberSaveable { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
+    var selectedItem by remember { mutableStateOf(TodoItem()) }
+    var isShowMore by remember { mutableStateOf(false) }
+
     val focusManager = LocalFocusManager.current
     Column(
         modifier = modifier
@@ -86,7 +104,7 @@ fun TodoListScreen(
                     DraggableItem(dragDropState, index) { isDragging ->
                         val elevation by animateDpAsState(if (isDragging) 4.dp else 1.dp, label = "")
                         TodoItem(
-                            modifier = Modifier,
+                            modifier = Modifier.fillMaxWidth(),
                             item = item,
                             elevation = elevation,
                             onCheckedChanged = { todo ->
@@ -99,42 +117,62 @@ fun TodoListScreen(
                                 onAction(TodoListAction.OnRemoveTodo(todo))
                             },
                             onMoreClicked = { todo ->
-
+                                selectedItem = todo
+                                showModalBottomSheet = true
+                                isShowMore = true
                             }
                         )
                     }
                 }
+                item { Spacer(Modifier.height(OverlappingHeight)) }
             }
 
             TodoInputBar(
                 modifier = Modifier.align(Alignment.BottomStart),
                 onAddButtonClick = { todo ->
-                    onAction(TodoListAction.OnAddTodo(todo))
+                    selectedItem = selectedItem.copy(title = todo)
+                    showModalBottomSheet = true
+                }
+            )
+        }
+    }
+
+    if(showModalBottomSheet) {
+        ModalBottomSheet(
+            modifier = Modifier,
+            sheetState = sheetState,
+            onDismissRequest = { showModalBottomSheet = false }
+        ) {
+            NewTaskScreen(
+                value = selectedItem.title,
+                navigateBack = { showModalBottomSheet = false },
+                onAddNewTask = { todo, date ->
+                    selectedItem = selectedItem.copy(title = todo, dateTimeDue = date)
+                    if(isShowMore) {
+                        onAction(TodoListAction.OnEditTodo(selectedItem))
+                        isShowMore = false
+                    } else {
+                        onAction(TodoListAction.OnAddTodo(selectedItem))
+                    }
+                    showModalBottomSheet = false
                 }
             )
         }
     }
 }
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    name = "Light Mode",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    name = "Dark Mode",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
-private fun DefaultPreview() {
-    val list = listOf(
-        TodoItem(1, "Learn Compose", false, 1),
-        TodoItem(2, "Learn Room", false, 2),
-        TodoItem(3, "Learn Kotlin", true, 3)
-    )
-    TodoListScreen(
-        modifier = Modifier,
-        todoList = list,
-        onAction = {},
-
-    )
-}
-
-@Preview(showBackground = true, widthDp = 480)
-@Composable
-private fun PortraitPreview() {
+private fun TodoListScreenPreview() {
     val list = listOf(
         TodoItem(1, "Learn Compose", false, 1),
         TodoItem(2, "Learn Room", false, 2),

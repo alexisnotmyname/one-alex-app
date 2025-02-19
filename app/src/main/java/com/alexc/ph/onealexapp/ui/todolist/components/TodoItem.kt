@@ -3,9 +3,10 @@ package com.alexc.ph.onealexapp.ui.todolist.components
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -19,6 +20,8 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -32,14 +35,14 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.alexc.ph.domain.model.TodoItem
-import com.alexc.ph.onealexapp.ui.constants.MediumDp
-import com.alexc.ph.onealexapp.ui.constants.TodoItemIconSize
 import com.alexc.ph.onealexapp.ui.theme.shapes
+import com.alexc.ph.onealexapp.ui.util.convertMillisToDate
 
 
 @Composable
@@ -65,11 +68,13 @@ fun TodoItem(
         }
     }
 
-    val containerColor = MaterialTheme.colorScheme.surface
+    val containerColor = MaterialTheme.colorScheme.onSecondary
     val contentColor = MaterialTheme.colorScheme.primary
+    val secondaryContentColor = MaterialTheme.colorScheme.secondary
 
     val backgroundColor = if (item.isDone) containerColor.copy(alpha = 0.5f) else containerColor
     val textColor = if (item.isDone) contentColor.copy(alpha = 0.5f) else contentColor
+    val textColorDate = if (item.isDone) secondaryContentColor.copy(alpha = 0.5f) else secondaryContentColor
     val textDecoration = if (item.isDone) TextDecoration.LineThrough else null
     val iconColorFilter = if (item.isDone) ColorFilter.tint(contentColor.copy(alpha = 0.5f)) else ColorFilter.tint(contentColor)
     val iconTintColor = if (item.isDone) contentColor.copy(alpha = 0.5f) else contentColor
@@ -81,17 +86,15 @@ fun TodoItem(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxSize()
-                .background(color = backgroundColor),
+                .fillMaxWidth()
+                .background(backgroundColor),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Image(
                 imageVector = Icons.Default.DragIndicator,
                 contentDescription = null,
                 modifier = Modifier
-                    .padding(MediumDp)
-                    .size(TodoItemIconSize),
+                    .padding(start = 8.dp),
                 colorFilter = iconColorFilter
             )
 
@@ -104,53 +107,83 @@ fun TodoItem(
                     checkedColor = contentColor.copy(alpha = 0.5f),
                     uncheckedColor = contentColor,
                     checkmarkColor = Color.White
-                )
+                ),
             )
 
-            BasicTextField(
-                value = text,
+            Box(
                 modifier = Modifier
                     .weight(1f)
-                    .focusRequester(focusRequester)
-                    .onFocusChanged { state ->
-                        isFocused = state.isFocused
-                        if (!state.isFocused) {
-                            onStoppedEditing(item, text)
-                        }
-                    },
-                enabled = !item.isDone,
-                textDecoration = textDecoration,
-                textColor = textColor,
-                onValueChanged = {
-                    text = it
-                },
-                onStoppedEditing = {
-                    onStoppedEditing(item, text)
-                }
-            )
-
-            if(isFocused) {
-                IconButton(
-                    onClick = { onItemDelete(item) },
-                    modifier = Modifier.size(32.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = null,
-                        tint = iconTintColor
-                    )
-                }
-            } else {
-                IconButton(
-                    onClick = { onMoreClicked(item) },
+                    .padding(bottom = 4.dp)
+            ) {
+                BasicTextField(
+                    value = text,
+                    placeHolderText = "Enter task here...",
+                    modifier = Modifier
+                        .padding(vertical = 4.dp)
+                        .focusRequester(focusRequester)
+                        .onFocusChanged { state ->
+                            isFocused = state.isFocused
+                            if (!state.isFocused) {
+                                onStoppedEditing(item, text)
+                            }
+                        },
                     enabled = !item.isDone,
-                    modifier = Modifier.size(32.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = null,
-                        tint = iconTintColor
+                    textDecoration = textDecoration,
+                    textColor = textColor,
+                    colors = TextFieldDefaults.colors().copy(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent
+                    ),
+                    onValueChanged = {
+                        text = it
+                    },
+                    onStoppedEditing = {
+                        onStoppedEditing(item, text)
+                    }
+                )
+
+                item.dateTimeDue?.let {
+                    Text(
+                        text = convertMillisToDate(it),
+                        fontWeight = FontWeight.ExtraBold,
+                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.ExtraBold),
+                        color = textColorDate,
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(start = 16.dp)
                     )
+                }
+            }
+
+            Column(
+                modifier = Modifier.padding(end = 8.dp)
+            ) {
+                if(isFocused || item.isDone) {
+                    IconButton(
+                        onClick = { onItemDelete(item) },
+                        modifier = Modifier.size(32.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = null,
+                            tint = iconTintColor
+                        )
+                    }
+                } else {
+                    IconButton(
+                        onClick = { onMoreClicked(item) },
+                        modifier = Modifier.size(32.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = null,
+                            tint = iconTintColor
+                        )
+                    }
                 }
             }
         }
@@ -170,8 +203,30 @@ fun TodoItem(
 @Composable
 fun ToDoItemUiPreview() {
     TodoItem(
-        modifier = Modifier,
+        modifier = Modifier.fillMaxWidth(),
         item = TodoItem(1, "Learn Compose", false, order = 0),
+        onCheckedChanged = {},
+        onStoppedEditing = {_, _ ->},
+        onItemDelete = {},
+        onMoreClicked = {}
+    )
+}
+
+@Preview(
+    name = "Light Mode",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    name = "Dark Mode",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun ToDoItemUiWithDatePreview() {
+    TodoItem(
+        modifier = Modifier.fillMaxWidth(),
+        item = TodoItem(1, "Learn Compose", false, dateTimeDue = 1739794572850, order = 0),
         onCheckedChanged = {},
         onStoppedEditing = {_, _ ->},
         onItemDelete = {},
