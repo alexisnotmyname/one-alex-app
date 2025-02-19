@@ -12,6 +12,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -68,7 +72,14 @@ fun PagedListContent(
         topBar = {
             GenericTopAppBar(
                 title = title,
-                navigateBack = navigateBack,
+                navigation = {
+                    IconButton(onClick = navigateBack) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBackIosNew,
+                            contentDescription = null
+                        )
+                    }
+                },
                 modifier = Modifier
                     .height(TOP_APP_BAR_HEIGHT_DP)
                     .fillMaxWidth()

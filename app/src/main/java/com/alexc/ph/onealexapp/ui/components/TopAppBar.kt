@@ -3,6 +3,9 @@ package com.alexc.ph.onealexapp.ui.components
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -16,10 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.alexc.ph.onealexapp.R
-import com.alexc.ph.onealexapp.ui.components.OneAlexAppIcons.Back
-import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,34 +53,47 @@ fun OneAlexTopAppBar(
 fun GenericTopAppBar(
     modifier: Modifier = Modifier,
     title: String = "",
-    navigateBack: () -> Unit
+    navigation: @Composable () -> Unit = {},
+    action: @Composable () -> Unit = {},
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = navigateBack) {
-            Icon(
-                imageVector = Back,
-                contentDescription = stringResource(R.string.cd_back)
-            )
-        }
+        navigation()
         Text(
+            modifier = Modifier.weight(1f),
             text = title,
-            style = MaterialTheme.typography.titleLarge
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
         )
+        action()
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun GenericTopAppBarPreview() {
-    OneAlexAppTheme {
-        GenericTopAppBar(
-            title = "Preview",
-            navigateBack = {},
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
+    GenericTopAppBar(
+        modifier = Modifier.fillMaxWidth(),
+        title = "Preview",
+        navigation = {
+            IconButton(onClick = { }) {
+                Icon(
+                    imageVector = Icons.Rounded.ArrowBackIosNew,
+                    contentDescription = null
+                )
+            }
+        },
+        action = {
+            IconButton(onClick = { }) {
+                Icon(
+                    imageVector = Icons.Rounded.Check,
+                    contentDescription = null
+                )
+            }
+        },
+    )
 }
 
