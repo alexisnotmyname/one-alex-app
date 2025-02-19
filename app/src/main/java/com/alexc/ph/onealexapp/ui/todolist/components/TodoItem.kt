@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.alexc.ph.domain.model.TodoItem
 import com.alexc.ph.onealexapp.ui.theme.shapes
 import com.alexc.ph.onealexapp.ui.util.convertMillisToDate
+import com.alexc.ph.onealexapp.ui.util.getCurrentDayMillis
 
 
 @Composable
@@ -74,7 +75,6 @@ fun TodoItem(
 
     val backgroundColor = if (item.isDone) containerColor.copy(alpha = 0.5f) else containerColor
     val textColor = if (item.isDone) contentColor.copy(alpha = 0.5f) else contentColor
-    val textColorDate = if (item.isDone) secondaryContentColor.copy(alpha = 0.5f) else secondaryContentColor
     val textDecoration = if (item.isDone) TextDecoration.LineThrough else null
     val iconColorFilter = if (item.isDone) ColorFilter.tint(contentColor.copy(alpha = 0.5f)) else ColorFilter.tint(contentColor)
     val iconTintColor = if (item.isDone) contentColor.copy(alpha = 0.5f) else contentColor
@@ -147,6 +147,14 @@ fun TodoItem(
                 )
 
                 item.dateTimeDue?.let {
+
+                    val isOverdue = it < getCurrentDayMillis()
+                    val textColorDate = when {
+                        item.isDone -> secondaryContentColor.copy(alpha = 0.5f)
+                        isOverdue -> Color.Red
+                        else -> secondaryContentColor
+                    }
+
                     Text(
                         text = convertMillisToDate(it),
                         fontWeight = FontWeight.ExtraBold,
