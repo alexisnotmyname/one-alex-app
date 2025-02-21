@@ -1,12 +1,7 @@
 package com.alexc.ph.onealexapp.ui.movies.details
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -25,18 +20,12 @@ fun NavGraphBuilder.movieDetailsScreen(
     onWatchClick: (title: String) -> Unit
 ) {
     composable<MovieDetailsRoute>(
-        enterTransition = {
-            slideIntoContainer(
-                animationSpec = tween(300, easing = EaseIn),
-                towards = AnimatedContentTransitionScope.SlideDirection.Start
-            )
-        },
-        exitTransition = {
-            slideOutOfContainer(
-                animationSpec = tween(300, easing = EaseOut),
-                towards = AnimatedContentTransitionScope.SlideDirection.End
-            )
-        }
+        enterTransition = { slideInHorizontally { initialOffset ->
+            initialOffset
+        } },
+        exitTransition = { slideOutHorizontally { initialOffset ->
+            initialOffset
+        } }
     ) {
         MovieDetailsScreen(
             navigateBack = navigateBack,
