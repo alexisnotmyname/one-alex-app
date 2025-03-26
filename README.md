@@ -23,7 +23,7 @@ One Alex app is a mutli-module demo Android app built using modern development p
 - **Coroutines & Flow**: For efficient asynchronous and reactive programming.
 - **Architecture**: MVVM, Clean Architecture.
 - **Networking**: [Retrofit 2](https://square.github.io/retrofit/) with [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization).
-- **Dependency Injection**: [Dagger Hilt](https://dagger.dev/hilt/).
+- **Dependency Injection**: Koin.
 - **Database**: [Room](https://developer.android.com/training/data-storage/room).
 - **Image Loading**: [Coil](https://coil-kt.github.io/coil/).
 

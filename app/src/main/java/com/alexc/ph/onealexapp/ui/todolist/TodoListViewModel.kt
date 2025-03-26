@@ -7,7 +7,6 @@ import com.alexc.ph.domain.repository.TodoListRepository
 import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Error
 import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Loading
 import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Success
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -16,13 +15,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import javax.inject.Inject
 
-@HiltViewModel
-class TodoListViewModel@Inject constructor(
-    private val todoListRepository: TodoListRepository
+class TodoListViewModel(
+    private val todoListRepository: TodoListRepository,
 ): ViewModel() {
 
     private var _todoList = MutableStateFlow<List<TodoItem>>(emptyList())
@@ -41,39 +36,51 @@ class TodoListViewModel@Inject constructor(
         }
     }
 
-    fun addTodo(todo: String) = viewModelScope.launch {
-            todoListRepository.add(TodoItem(title = todo, order = _todoList.value.size))
+    fun onAction(action: TodoListAction) {
+        when(action) {
+            is TodoListAction.OnAddTodo -> {
+                val newTodo = action.todo.copy(order = _todoList.value.size)
+                viewModelScope.launch {
+                    todoListRepository.add(newTodo)
+                }
+            }
+            is TodoListAction.OnRemoveTodo -> {
+                viewModelScope.launch {
+                    todoListRepository.delete(action.todo)
+                }
+            }
+            is TodoListAction.OnToggleTodo -> {
+                viewModelScope.launch {
+                    val updated = action.todo.copy(isDone = !action.todo.isDone)
+                    todoListRepository.update(updated)
+                }
+            }
+            is TodoListAction.OnStoppedEditing -> {
+                viewModelScope.launch {
+                    val updated = action.todo.copy(title = action.newTitle)
+                    todoListRepository.update(updated)
+                }
+            }
+            is TodoListAction.OnTodoItemDragged -> {
+                if(_todoList.value[action.fromIndex].isDone) return
+                val updatedList = _todoList.value.toMutableList().apply {
+                    add(action.toIndex, removeAt(action.fromIndex))
+                }.mapIndexed { index, todoItem ->
+                    todoItem.copy(order = index)
+                }
+                _todoList.value = updatedList
+            }
+            TodoListAction.OnTodoItemDraggedEnd -> {
+                viewModelScope.launch {
+                    todoListRepository.updateTodoItems(_todoList.value)
+                }
+            }
+            is TodoListAction.OnEditTodo -> {
+                viewModelScope.launch {
+                    todoListRepository.update(action.todo)
+                }
+            }
         }
-
-    fun toggleTodo(todo: TodoItem) = viewModelScope.launch {
-            val todoEntity = todo.copy(isDone = !todo.isDone)
-            todoListRepository.update(todoEntity)
-        }
-
-    fun removeTodo(todo: TodoItem) = viewModelScope.launch {
-            todoListRepository.delete(todo)
-        }
-
-    fun updateTodoList() = viewModelScope.launch {
-        val todoEntityList = _todoList.value
-        todoListRepository.updateTodoItems(todoEntityList)
-    }
-
-    fun reorderTodoList(draggedIndex: Int, targetIndex: Int) {
-        if(_todoList.value[draggedIndex].isDone) return
-        val updatedList = _todoList.value.toMutableList().apply {
-            val itemToMove = removeAt(draggedIndex)
-            add(targetIndex, itemToMove)
-        }.mapIndexed { index, todoItem ->
-            todoItem.copy(order = index)
-        }
-        _todoList.value = updatedList
-    }
-
-    fun getCurrentDate(): String {
-        val currentDate = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("MMM dd - EEEE")
-        return currentDate.format(formatter)
     }
 }
 

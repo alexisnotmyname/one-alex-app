@@ -10,9 +10,12 @@ data class TodoEntity(
     val id: Int = 0,
     val title: String,
     val isDone: Boolean = false,
-    val order: Int
+    val order: Int,
+    val dateTimeCreated: Long = System.currentTimeMillis(),
+    val dateTimeDue: Long? = null,
+    val dateTimeCompleted: Long? = null,
 )
 
-fun TodoItem.toTodoEntity() = TodoEntity(id = id, title = title, isDone = isDone, order = order)
-fun TodoEntity.toTodoItem() = TodoItem(id = id, title = title, isDone = isDone, order = order)
+fun TodoItem.toTodoEntity() = TodoEntity(id = id, title = title, isDone = isDone, order = order, dateTimeCreated = dateTimeCreated, dateTimeDue = dateTimeDue, dateTimeCompleted = dateTimeCompleted)
+fun TodoEntity.toTodoItem() = TodoItem(id = id, title = title, isDone = isDone, order = order, dateTimeCreated = dateTimeCreated, dateTimeDue = dateTimeDue, dateTimeCompleted = dateTimeCompleted)
 

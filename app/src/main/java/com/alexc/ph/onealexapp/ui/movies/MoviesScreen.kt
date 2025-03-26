@@ -28,7 +28,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alexc.ph.domain.model.BaseContent
 import com.alexc.ph.domain.model.Category
@@ -49,11 +48,12 @@ import com.alexc.ph.onealexapp.ui.constants.SmallDp
 import com.alexc.ph.onealexapp.ui.constants.XLargeDp
 import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
 import com.alexc.ph.onealexapp.ui.theme.shapes
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MoviesScreen(
     modifier: Modifier = Modifier,
-    moviesMoviesViewModel: MoviesViewModel = hiltViewModel(),
+    moviesMoviesViewModel: MoviesViewModel = koinViewModel(),
     navigateToMovieDetails: (BaseContent) -> Unit = {},
     navigateToPagedList: (Category) -> Unit = {}
 ) {

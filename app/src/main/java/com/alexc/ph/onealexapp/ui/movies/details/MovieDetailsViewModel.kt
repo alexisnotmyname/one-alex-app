@@ -4,21 +4,20 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.alexc.ph.domain.model.Result
 import com.alexc.ph.domain.GetMovieDetailsUseCase
 import com.alexc.ph.domain.model.ContentItem
 import com.alexc.ph.domain.model.ContentType
-import com.alexc.ph.onealexapp.ui.movies.details.MovieDetailsUiState.*
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.alexc.ph.domain.model.Result
+import com.alexc.ph.onealexapp.ui.movies.details.MovieDetailsUiState.Error
+import com.alexc.ph.onealexapp.ui.movies.details.MovieDetailsUiState.Loading
+import com.alexc.ph.onealexapp.ui.movies.details.MovieDetailsUiState.Success
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
-@HiltViewModel
-class MovieDetailsViewModel @Inject constructor(
+class MovieDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     getMovieDetailsUseCase: GetMovieDetailsUseCase
 ): ViewModel() {

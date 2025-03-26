@@ -4,9 +4,8 @@ import com.alexc.ph.data.network.model.MovieResponse
 import com.alexc.ph.data.network.model.ResponseDto
 import com.alexc.ph.data.network.model.TvSeriesResponse
 import com.alexc.ph.data.network.retrofit.MoviesRetrofit
-import javax.inject.Inject
 
-class MovieDataSourceImpl @Inject constructor(
+class MovieDataSourceImpl(
     private val api: MoviesRetrofit
 ): MovieDataSource {
     override suspend fun getMovie(id: Int): MovieResponse = api.getMovie(id)

@@ -13,6 +13,6 @@ fun NavController.navigateToTodoList(navOptions: NavOptions) =
 
 fun NavGraphBuilder.todoListScreen() {
     composable<TodoListRoute> {
-        MyTodoListScreen()
+        TodoListRoot()
     }
 }
