@@ -57,6 +57,9 @@ fun OneAlexTopAppBar(
         navigationIcon = {
             IconButton(onClick = {
                 isSearch = !isSearch
+                if(!isSearch) {
+                    onSearchQueryChange("")
+                }
             }) {
                 Icon(
                     imageVector = if(isSearch) OneAlexAppIcons.Back else OneAlexAppIcons.Search,

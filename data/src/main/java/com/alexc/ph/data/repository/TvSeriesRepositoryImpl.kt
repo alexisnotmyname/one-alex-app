@@ -17,7 +17,6 @@ class TvSeriesRepositoryImpl(
     private val moviesDataSource: MovieDataSource
 ): TvSeriesRepository {
     override fun getTvSeries(id: Int): Flow<Result<TvSeries>> = flow {
-        emit(Result.Loading)
         try {
             emit(Result.Success(moviesDataSource.getTvSeries(id).toTvSeries()))
         } catch (e: Exception) {
@@ -26,7 +25,6 @@ class TvSeriesRepositoryImpl(
     }
 
     override fun getTopRated(language: String, page: Int): Flow<Result<List<TvSeries>>> = flow {
-        emit(Result.Loading)
         try {
             emit(Result.Success(moviesDataSource.getTopRatedTvSeries(page).results.map { it.toTvSeries() }))
         } catch (e: Exception) {
@@ -35,7 +33,6 @@ class TvSeriesRepositoryImpl(
     }
 
     override fun getPopular(language: String, page: Int): Flow<Result<List<TvSeries>>> = flow {
-        emit(Result.Loading)
         try {
             emit(Result.Success(moviesDataSource.getPopularTvSeries(page).results.map { it.toTvSeries() }))
         } catch (e: Exception) {

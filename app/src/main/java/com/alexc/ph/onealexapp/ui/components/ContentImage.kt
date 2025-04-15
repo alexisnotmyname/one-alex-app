@@ -52,7 +52,7 @@ fun ContentImage(
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
-    ){
+    ) {
 
         when (imagePainterState) {
             is AsyncImagePainter.State.Loading,
@@ -62,7 +62,7 @@ fun ContentImage(
             else -> {
                 Box(
                     modifier = Modifier
-                        .background(Color.Gray)
+                        .background(Color.Transparent)
                         .fillMaxSize()
 
                 )
@@ -73,7 +73,7 @@ fun ContentImage(
             painter = imageLoader,
             contentDescription = contentDescription,
             contentScale = contentScale,
-            modifier = modifier
+            modifier = Modifier.fillMaxSize()
         )
     }
 }

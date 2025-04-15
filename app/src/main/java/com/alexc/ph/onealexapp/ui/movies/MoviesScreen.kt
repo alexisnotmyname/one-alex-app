@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,9 +30,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alexc.ph.domain.model.BaseContent
 import com.alexc.ph.domain.model.Category
-import com.alexc.ph.domain.model.CombinedMovies
-import com.alexc.ph.domain.model.CombinedMoviesAndSeries
-import com.alexc.ph.domain.model.CombinedTvSeries
+import com.alexc.ph.domain.model.AllMovies
+import com.alexc.ph.domain.model.CombinedMoviesAndTvSeries
+import com.alexc.ph.domain.model.AllTvSeries
 import com.alexc.ph.domain.model.Movie
 import com.alexc.ph.domain.model.TvSeries
 import com.alexc.ph.onealexapp.R
@@ -47,7 +46,6 @@ import com.alexc.ph.onealexapp.ui.constants.MOVIE_IMAGE_SIZE_DP
 import com.alexc.ph.onealexapp.ui.constants.MediumDp
 import com.alexc.ph.onealexapp.ui.constants.SmallDp
 import com.alexc.ph.onealexapp.ui.constants.XLargeDp
-import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
 import com.alexc.ph.onealexapp.ui.theme.shapes
 import org.koin.androidx.compose.koinViewModel
 
@@ -57,28 +55,25 @@ fun MoviesScreenRoot(
     navigateToMovieDetails: (BaseContent) -> Unit = {},
     navigateToPagedList: (Category) -> Unit = {}
 ) {
-    val moviesState by moviesMoviesViewModel.moviesUiState.collectAsStateWithLifecycle()
-
-    when(val uiState = moviesState) {
-        is MoviesUiState.Error -> GenericErrorScreen(onRetry = moviesMoviesViewModel::retry)
-        MoviesUiState.Loading -> LoadingScreen()
-        is MoviesUiState.Success -> {
-            MoviesScreen(
-                modifier = Modifier.fillMaxSize(),
-                content = uiState.content,
-                navigateToMovieDetails = navigateToMovieDetails,
-                onCategoryClicked = navigateToPagedList
-            )
+    val state by moviesMoviesViewModel.state.collectAsStateWithLifecycle()
+    MoviesScreen(
+        modifier = Modifier.fillMaxSize(),
+        state = state,
+        navigateToMovieDetails = navigateToMovieDetails,
+        onCategoryClicked = navigateToPagedList,
+        onRetryClicked = {
+                moviesMoviesViewModel.onAction(MoviesAction.OnRetryClicked)
         }
-    }
+    )
 }
 
 @Composable
 fun MoviesScreen(
     modifier: Modifier = Modifier,
-    content: CombinedMoviesAndSeries,
-    navigateToMovieDetails: (BaseContent) -> Unit = {},
-    onCategoryClicked: (Category) -> Unit = {}
+    state: MoviesState,
+    navigateToMovieDetails: (BaseContent) -> Unit,
+    onCategoryClicked: (Category) -> Unit,
+    onRetryClicked: () -> Unit
 ) {
     Column {
         OneAlexTopAppBar(
@@ -91,59 +86,87 @@ fun MoviesScreen(
 
             }
         )
-        LazyColumn(
-            modifier = modifier
+
+        if(state.isLoading) {
+            LoadingScreen()
+        } else {
+            when {
+                state.error.isNotBlank() -> {
+                    GenericErrorScreen(onRetry = onRetryClicked)
+                }
+                else -> {
+                    MovieList(
+                        modifier = modifier,
+                        state = state,
+                        navigateToMovieDetails = navigateToMovieDetails,
+                        onCategoryClicked = onCategoryClicked
+                    )
+                }
+            }
+
+        }
+    }
+}
+
+@Composable
+fun MovieList(
+    modifier: Modifier = Modifier,
+    state: MoviesState,
+    navigateToMovieDetails: (BaseContent) -> Unit = {},
+    onCategoryClicked: (Category) -> Unit = {}
+) {
+    LazyColumn(
+        modifier = modifier
+    ) {
+        movieItems(
+            movies = state.movies.popular,
+            navigateToMovieDetails = navigateToMovieDetails
         ) {
-            movieItems(
-                movies = content.movies.popular,
-                navigateToMovieDetails = navigateToMovieDetails
-            ) {
-                MovieHeaderContent(
-                    headerTitle = stringResource(R.string.popular_movies),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onCategoryClicked(Category.POPULAR_MOVIES) }
-                )
-            }
-            movieItems(
-                movies = content.movies.nowPlaying,
-                navigateToMovieDetails = navigateToMovieDetails
-            ) {
-                MovieHeaderContent(
-                    headerTitle = stringResource(R.string.now_playing_movies),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onCategoryClicked(Category.NOW_PLAYING_MOVIES) }
-                )
-            }
+            MovieHeaderContent(
+                headerTitle = stringResource(R.string.popular_movies),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onCategoryClicked(Category.POPULAR_MOVIES) }
+            )
+        }
+        movieItems(
+            movies = state.movies.nowPlaying,
+            navigateToMovieDetails = navigateToMovieDetails
+        ) {
+            MovieHeaderContent(
+                headerTitle = stringResource(R.string.now_playing_movies),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onCategoryClicked(Category.NOW_PLAYING_MOVIES) }
+            )
+        }
 
-            movieItems(
-                movies = content.tvSeries.popular,
-                navigateToMovieDetails = navigateToMovieDetails
-            ) {
-                MovieHeaderContent(
-                    headerTitle = stringResource(R.string.popular_series),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onCategoryClicked(Category.POPULAR_TV_SERIES) }
-                )
-            }
+        movieItems(
+            movies = state.tvSeries.popular,
+            navigateToMovieDetails = navigateToMovieDetails
+        ) {
+            MovieHeaderContent(
+                headerTitle = stringResource(R.string.popular_series),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onCategoryClicked(Category.POPULAR_TV_SERIES) }
+            )
+        }
 
-            movieItems(
-                movies = content.tvSeries.topRated,
-                navigateToMovieDetails = navigateToMovieDetails
-            ) {
-                MovieHeaderContent(
-                    headerTitle = stringResource(R.string.top_rated_series),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onCategoryClicked(Category.TOP_RATED_TV_SERIES) }
-                )
-            }
+        movieItems(
+            movies = state.tvSeries.topRated,
+            navigateToMovieDetails = navigateToMovieDetails
+        ) {
+            MovieHeaderContent(
+                headerTitle = stringResource(R.string.top_rated_series),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onCategoryClicked(Category.TOP_RATED_TV_SERIES) }
+            )
+        }
 
-            item {
-                Spacer(Modifier.height(LargeDp))
-            }
+        item {
+            Spacer(Modifier.height(LargeDp))
         }
     }
 }
@@ -244,7 +267,7 @@ fun MovieItem(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun MovieScreenPreview() {
     val popularMovies = listOf(
@@ -274,28 +297,26 @@ fun MovieScreenPreview() {
         TvSeries(id = 2, title = "nowplaying series 3"),
         TvSeries(id = 3, title = "nowplaying series 4")
     )
-    val combinedMoviesAndTvSeries = CombinedMoviesAndSeries(
-        movies = CombinedMovies(nowPlayingMovies, popularMovies),
-        tvSeries = CombinedTvSeries(nowPlayingSeries, popularSeries)
+
+    val state = MoviesState(
+        isLoading = false,
+        movies = AllMovies(nowPlayingMovies, popularMovies),
+        tvSeries = AllTvSeries(nowPlayingSeries, popularSeries)
     )
-    OneAlexAppTheme {
-        Surface {
-            MoviesScreen(
-                content = combinedMoviesAndTvSeries
-            )
-        }
-    }
+
+    MoviesScreen(
+        state = state,
+        navigateToMovieDetails = {},
+        onCategoryClicked = {},
+        onRetryClicked = {}
+    )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun MovieItemPreview() {
-    OneAlexAppTheme {
-        Surface {
-            MovieItem(
-                imageUrl = "imageUrl",
-                title = "Sample Title",
-            )
-        }
-    }
+    MovieItem(
+        imageUrl = "imageUrl",
+        title = "Sample Title",
+    )
 }

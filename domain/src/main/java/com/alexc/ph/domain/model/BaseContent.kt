@@ -6,6 +6,7 @@ abstract class BaseContent {
     abstract val posterPath: String
     abstract val backdropPath: String
     abstract val contentType: ContentType
+    abstract val genres: List<Genre>
 }
 
 enum class ContentType(val value: String){

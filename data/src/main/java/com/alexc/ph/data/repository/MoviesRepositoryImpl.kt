@@ -18,7 +18,6 @@ class MoviesRepositoryImpl(
 ) : MoviesRepository {
 
     override fun getMovie(id: Int): Flow<Result<Movie>> = flow {
-        emit(Result.Loading)
         try {
             emit(Result.Success(movieDataSource.getMovie(id).toMovie()))
         } catch (e: Exception) {
@@ -27,7 +26,6 @@ class MoviesRepositoryImpl(
     }
 
     override fun getNowPlaying(): Flow<Result<List<Movie>>> = flow {
-        emit(Result.Loading)
         try {
             emit(Result.Success(movieDataSource.getNowPlayingMovies(1).results.map { it.toMovie() }))
         } catch (e: Exception) {
@@ -36,7 +34,6 @@ class MoviesRepositoryImpl(
     }
 
     override fun getPopular(): Flow<Result<List<Movie>>> = flow {
-        emit(Result.Loading)
         try {
             emit(Result.Success(movieDataSource.getPopularMovies(1).results.map { it.toMovie() }))
         } catch (e: Exception) {

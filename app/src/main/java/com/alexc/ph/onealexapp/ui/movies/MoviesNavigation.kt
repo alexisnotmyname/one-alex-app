@@ -1,7 +1,6 @@
 package com.alexc.ph.onealexapp.ui.movies
 
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions

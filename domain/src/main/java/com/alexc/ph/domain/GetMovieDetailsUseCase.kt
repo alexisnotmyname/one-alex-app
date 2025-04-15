@@ -19,7 +19,6 @@ class GetMovieDetailsUseCase(
                 moviesRepository.getMovie(id).map { result ->
                     when(result) {
                         is Result.Error -> Result.Error(result.exception)
-                        Result.Loading -> Result.Loading
                         is Result.Success -> Result.Success(ContentItem.MovieItem(result.data))
                     }
                 }
@@ -28,7 +27,6 @@ class GetMovieDetailsUseCase(
                 tvSeriesRepository.getTvSeries(id).map { result ->
                     when(result) {
                         is Result.Error -> Result.Error(result.exception)
-                        Result.Loading -> Result.Loading
                         is Result.Success -> Result.Success(ContentItem.TvSeriesItem(result.data))
                     }
                 }
