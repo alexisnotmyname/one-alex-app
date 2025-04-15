@@ -7,7 +7,7 @@ import androidx.navigation.toRoute
 import com.alexc.ph.domain.GetMovieDetailsUseCase
 import com.alexc.ph.domain.model.ContentItem
 import com.alexc.ph.domain.model.ContentType
-import com.alexc.ph.domain.model.Result
+import com.alexc.ph.domain.util.Result
 import com.alexc.ph.onealexapp.ui.movies.details.MovieDetailsUiState.Error
 import com.alexc.ph.onealexapp.ui.movies.details.MovieDetailsUiState.Loading
 import com.alexc.ph.onealexapp.ui.movies.details.MovieDetailsUiState.Success

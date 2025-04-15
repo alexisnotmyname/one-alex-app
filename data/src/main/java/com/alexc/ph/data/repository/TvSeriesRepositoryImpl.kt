@@ -7,7 +7,7 @@ import com.alexc.ph.data.network.datasource.MovieDataSource
 import com.alexc.ph.data.network.model.toTvSeries
 import com.alexc.ph.data.repository.paging.PopularTvSeriesPagingSource
 import com.alexc.ph.data.repository.paging.TopRatedTvSeriesPagingSource
-import com.alexc.ph.domain.model.Result
+import com.alexc.ph.domain.util.Result
 import com.alexc.ph.domain.model.TvSeries
 import com.alexc.ph.domain.repository.TvSeriesRepository
 import kotlinx.coroutines.flow.Flow

@@ -35,12 +35,15 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.alexc.ph.domain.model.TodoItem
+import com.alexc.ph.onealexapp.R
+import com.alexc.ph.onealexapp.ui.components.BasicTextField
 import com.alexc.ph.onealexapp.ui.theme.shapes
 import com.alexc.ph.onealexapp.ui.util.convertMillisToDate
 import com.alexc.ph.onealexapp.ui.util.getCurrentDayMillis
@@ -117,7 +120,12 @@ fun TodoItem(
             ) {
                 BasicTextField(
                     value = text,
-                    placeHolderText = "Enter task here...",
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.enter_new_item),
+                            style = MaterialTheme.typography.labelLarge.copy(color = MaterialTheme.colorScheme.primary),
+                        )
+                    },
                     modifier = Modifier
                         .padding(vertical = 4.dp)
                         .focusRequester(focusRequester)
@@ -130,6 +138,7 @@ fun TodoItem(
                     enabled = !item.isDone,
                     textDecoration = textDecoration,
                     textColor = textColor,
+                    textStyle = MaterialTheme.typography.bodyMedium,
                     colors = TextFieldDefaults.colors().copy(
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
@@ -156,7 +165,7 @@ fun TodoItem(
                     }
 
                     Text(
-                        text = convertMillisToDate(it),
+                        text = it.convertMillisToDate(),
                         fontWeight = FontWeight.ExtraBold,
                         style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.ExtraBold),
                         color = textColorDate,

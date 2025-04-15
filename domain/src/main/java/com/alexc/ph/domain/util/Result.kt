@@ -1,4 +1,4 @@
-package com.alexc.ph.domain.model
+package com.alexc.ph.domain.util
 
 sealed interface Result<out T> {
     data class Success<T>(val data: T) : Result<T>

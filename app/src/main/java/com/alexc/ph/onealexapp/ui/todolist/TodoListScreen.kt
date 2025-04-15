@@ -1,7 +1,6 @@
 
 package com.alexc.ph.onealexapp.ui.todolist
 
-
 import android.content.res.Configuration
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -29,11 +28,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alexc.ph.domain.model.TodoItem
-import com.alexc.ph.onealexapp.ui.constants.OverlappingHeight
+import com.alexc.ph.onealexapp.R
+import com.alexc.ph.onealexapp.ui.components.OneAlexTopAppBar
 import com.alexc.ph.onealexapp.ui.todolist.components.DraggableItem
 import com.alexc.ph.onealexapp.ui.todolist.components.NewTaskScreen
 import com.alexc.ph.onealexapp.ui.todolist.components.TodoInputBar
@@ -43,37 +44,44 @@ import com.alexc.ph.onealexapp.ui.todolist.components.rememberDragDropState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TodoListRoot(
+fun TodoListScreenRoot(
     todoViewModel: TodoListViewModel = koinViewModel()
 ) {
-    val items by todoViewModel.uiState.collectAsStateWithLifecycle()
-    if (items is TodoListUiState.Success) {
-        val todoList = (items as TodoListUiState.Success).todoList
-        TodoListScreen(
-            modifier = Modifier
-                .fillMaxSize(),
-            todoList = todoList,
-            onAction = todoViewModel::onAction,
-        )
-    }
+    val state by todoViewModel.state.collectAsStateWithLifecycle()
+    TodoListScreen(
+        modifier = Modifier.fillMaxSize(),
+        state = state,
+        onAction = todoViewModel::onAction,
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoListScreen(
     modifier: Modifier = Modifier,
-    todoList: List<TodoItem>,
+    state: TodoListState,
     onAction: (TodoListAction) -> Unit,
 ) {
+    val todoList = state.todoList
     var showModalBottomSheet by rememberSaveable { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState()
     var selectedItem by remember { mutableStateOf(TodoItem()) }
-    var isShowMore by remember { mutableStateOf(false) }
+    var isEditTask by remember { mutableStateOf(false) }
 
+    val sheetState = rememberModalBottomSheetState()
     val focusManager = LocalFocusManager.current
     Column(
         modifier = modifier
     ) {
+        OneAlexTopAppBar(
+            titleRes = R.string.todo,
+            searchQuery = state.searchQuery,
+            onSearchQueryChange = { query ->
+                onAction(TodoListAction.OnSearchQueryChange(query))
+            },
+            onImeSearch = {
+                focusManager.clearFocus()
+            }
+        )
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -119,12 +127,12 @@ fun TodoListScreen(
                             onMoreClicked = { todo ->
                                 selectedItem = todo
                                 showModalBottomSheet = true
-                                isShowMore = true
+                                isEditTask = true
                             }
                         )
                     }
                 }
-                item { Spacer(Modifier.height(OverlappingHeight)) }
+                item { Spacer(Modifier.height(64.dp)) }
             }
 
             TodoInputBar(
@@ -141,18 +149,34 @@ fun TodoListScreen(
         ModalBottomSheet(
             modifier = Modifier,
             sheetState = sheetState,
-            onDismissRequest = { showModalBottomSheet = false }
+            onDismissRequest = {
+                showModalBottomSheet = false
+                isEditTask = false
+            }
         ) {
             NewTaskScreen(
-                value = selectedItem.title,
-                navigateBack = { showModalBottomSheet = false },
-                onAddNewTask = { todo, date ->
-                    selectedItem = selectedItem.copy(title = todo, dateTimeDue = date)
-                    if(isShowMore) {
+                todoItem = selectedItem,
+                title = if(isEditTask) stringResource(R.string.edit_item) else stringResource(R.string.add_new_item),
+                navigateBack = {
+                    showModalBottomSheet = false
+                    isEditTask = false
+                },
+                onSaveClick = { todo, date ->
+                    if(isEditTask) {
+                        selectedItem = selectedItem.copy(
+                            title = todo,
+                            dateTimeDue = date
+                        )
                         onAction(TodoListAction.OnEditTodo(selectedItem))
-                        isShowMore = false
+                        isEditTask = false
+                        selectedItem = TodoItem()
                     } else {
+                        selectedItem = TodoItem(
+                            title = todo,
+                            dateTimeDue = date
+                        )
                         onAction(TodoListAction.OnAddTodo(selectedItem))
+                        selectedItem = TodoItem()
                     }
                     showModalBottomSheet = false
                 }
@@ -180,7 +204,7 @@ private fun TodoListScreenPreview() {
     )
     TodoListScreen(
         modifier = Modifier,
-        todoList = list,
+        state = TodoListState(todoList = list),
         onAction = {},
     )
 }

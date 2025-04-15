@@ -10,35 +10,29 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.alexc.ph.onealexapp.R
+import androidx.navigation.compose.NavHost
 import com.alexc.ph.onealexapp.ui.components.GradientBackground
-import com.alexc.ph.onealexapp.ui.components.OneAlexAppIcons
-import com.alexc.ph.onealexapp.ui.components.OneAlexTopAppBar
-import com.alexc.ph.onealexapp.ui.navigation.OneAlexNavHost
+import com.alexc.ph.onealexapp.ui.movies.details.movieDetailsScreen
+import com.alexc.ph.onealexapp.ui.movies.moviesScreen
+import com.alexc.ph.onealexapp.ui.movies.paged.pagedListScreen
 import com.alexc.ph.onealexapp.ui.navigation.OneAlexNavigationSuiteScaffold
-import com.alexc.ph.onealexapp.ui.settings.SettingsDialog
 import com.alexc.ph.onealexapp.ui.theme.LocalGradientColors
+import com.alexc.ph.onealexapp.ui.todolist.TodoListRoute
+import com.alexc.ph.onealexapp.ui.todolist.todoListScreen
 import kotlin.reflect.KClass
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OneAlexApp(
     modifier: Modifier = Modifier,
@@ -46,17 +40,6 @@ fun OneAlexApp(
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()
 ) {
     val currentDestination = appState.currentDestination
-    var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
-
-    if(showSettingsDialog) {
-        SettingsDialog(
-            onDismiss = {
-                showSettingsDialog = false
-            },
-            onButtonClicked = { }
-        )
-    }
-
     OneAlexNavigationSuiteScaffold(
         navigationSuiteItems = {
             appState.topLevelDestinations.forEach { destination ->
@@ -83,9 +66,9 @@ fun OneAlexApp(
         },
         windowAdaptiveInfo = windowAdaptiveInfo,
     ) {
-        GradientBackground (
+        GradientBackground(
             gradientColors = LocalGradientColors.current
-        ){
+        ) {
             Scaffold(
                 modifier = modifier,
                 containerColor = Color.Transparent,
@@ -102,37 +85,35 @@ fun OneAlexApp(
                             ),
                         ),
                 ) {
-                    val destination = appState.currentTopLevelDestination
-                    var shouldShowTopAppBar = false
-
-                    if (destination != null) {
-                        shouldShowTopAppBar = true
-                        OneAlexTopAppBar(
-                            titleRes = destination.titleTextId,
-                            navigationIcon = OneAlexAppIcons.Search,
-                            navigationIconContentDescription = stringResource(id = R.string.search,),
-                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
-                            onNavigationClick = { // TODO add search
-                            }
-                        )
-                    }
-
                     Box(
                         modifier = Modifier.consumeWindowInsets(
-                            if (shouldShowTopAppBar) {
+//                            if (shouldShowTopAppBar) {
                                 WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
-                            } else {
-                                WindowInsets(0, 0, 0, 0)
-                            },
+//                            } else {
+//                                WindowInsets(0, 0, 0, 0)
+//                            },
                         ),
                     ) {
-                        OneAlexNavHost(
-                            appState = appState,
-                            navigateToMovieDetails = appState::navigateToMovieDetails,
-                            navigateToPagedList = appState::navigateToPagedList,
-                            navigateBack = appState::navigateBack,
-                            onWatchClick = appState::watch,
-                        )
+                        val navController = appState.navController
+                        NavHost(
+                            navController = navController,
+                            startDestination = TodoListRoute,
+                            modifier = modifier
+                        ) {
+                            todoListScreen()
+                            moviesScreen(
+                                navigateToMovieDetails = appState::navigateToMovieDetails,
+                                navigateToPagedList = appState::navigateToPagedList
+                            )
+                            movieDetailsScreen(
+                                navigateBack = appState::navigateBack,
+                                onWatchClick = appState::watch
+                            )
+                            pagedListScreen(
+                                navigateBack = appState::navigateBack,
+                                navigateToMovieDetails = appState::navigateToMovieDetails
+                            )
+                        }
                     }
                 }
             }

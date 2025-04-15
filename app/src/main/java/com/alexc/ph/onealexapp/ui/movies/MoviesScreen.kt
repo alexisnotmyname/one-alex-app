@@ -41,6 +41,7 @@ import com.alexc.ph.onealexapp.ui.components.ContentImage
 import com.alexc.ph.onealexapp.ui.components.GenericErrorScreen
 import com.alexc.ph.onealexapp.ui.components.LoadingScreen
 import com.alexc.ph.onealexapp.ui.components.OneAlexAppIcons.Forward
+import com.alexc.ph.onealexapp.ui.components.OneAlexTopAppBar
 import com.alexc.ph.onealexapp.ui.constants.LargeDp
 import com.alexc.ph.onealexapp.ui.constants.MOVIE_IMAGE_SIZE_DP
 import com.alexc.ph.onealexapp.ui.constants.MediumDp
@@ -51,8 +52,7 @@ import com.alexc.ph.onealexapp.ui.theme.shapes
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MoviesScreen(
-    modifier: Modifier = Modifier,
+fun MoviesScreenRoot(
     moviesMoviesViewModel: MoviesViewModel = koinViewModel(),
     navigateToMovieDetails: (BaseContent) -> Unit = {},
     navigateToPagedList: (Category) -> Unit = {}
@@ -64,7 +64,7 @@ fun MoviesScreen(
         MoviesUiState.Loading -> LoadingScreen()
         is MoviesUiState.Success -> {
             MoviesScreen(
-                modifier = modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 content = uiState.content,
                 navigateToMovieDetails = navigateToMovieDetails,
                 onCategoryClicked = navigateToPagedList
@@ -80,58 +80,70 @@ fun MoviesScreen(
     navigateToMovieDetails: (BaseContent) -> Unit = {},
     onCategoryClicked: (Category) -> Unit = {}
 ) {
-    LazyColumn(
-        modifier = modifier
-    ) {
-        movieItems(
-            movies = content.movies.popular,
-            navigateToMovieDetails = navigateToMovieDetails
-        ) {
-            MovieHeaderContent(
-                headerTitle = stringResource(R.string.popular_movies),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onCategoryClicked(Category.POPULAR_MOVIES) }
-            )
-        }
-        movieItems(
-            movies = content.movies.nowPlaying,
-            navigateToMovieDetails = navigateToMovieDetails
-        ) {
-            MovieHeaderContent(
-                headerTitle = stringResource(R.string.now_playing_movies),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onCategoryClicked(Category.NOW_PLAYING_MOVIES) }
-            )
-        }
+    Column {
+        OneAlexTopAppBar(
+            titleRes = R.string.movies,
+            searchQuery = "",
+            onSearchQueryChange = { query ->
 
-        movieItems(
-            movies = content.tvSeries.popular,
-            navigateToMovieDetails = navigateToMovieDetails
-        ) {
-            MovieHeaderContent(
-                headerTitle = stringResource(R.string.popular_series),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onCategoryClicked(Category.POPULAR_TV_SERIES) }
-            )
-        }
+            },
+            onImeSearch = {
 
-        movieItems(
-            movies = content.tvSeries.topRated,
-            navigateToMovieDetails = navigateToMovieDetails
+            }
+        )
+        LazyColumn(
+            modifier = modifier
         ) {
-            MovieHeaderContent(
-                headerTitle = stringResource(R.string.top_rated_series),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onCategoryClicked(Category.TOP_RATED_TV_SERIES) }
-            )
-        }
+            movieItems(
+                movies = content.movies.popular,
+                navigateToMovieDetails = navigateToMovieDetails
+            ) {
+                MovieHeaderContent(
+                    headerTitle = stringResource(R.string.popular_movies),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onCategoryClicked(Category.POPULAR_MOVIES) }
+                )
+            }
+            movieItems(
+                movies = content.movies.nowPlaying,
+                navigateToMovieDetails = navigateToMovieDetails
+            ) {
+                MovieHeaderContent(
+                    headerTitle = stringResource(R.string.now_playing_movies),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onCategoryClicked(Category.NOW_PLAYING_MOVIES) }
+                )
+            }
 
-        item {
-            Spacer(Modifier.height(LargeDp))
+            movieItems(
+                movies = content.tvSeries.popular,
+                navigateToMovieDetails = navigateToMovieDetails
+            ) {
+                MovieHeaderContent(
+                    headerTitle = stringResource(R.string.popular_series),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onCategoryClicked(Category.POPULAR_TV_SERIES) }
+                )
+            }
+
+            movieItems(
+                movies = content.tvSeries.topRated,
+                navigateToMovieDetails = navigateToMovieDetails
+            ) {
+                MovieHeaderContent(
+                    headerTitle = stringResource(R.string.top_rated_series),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onCategoryClicked(Category.TOP_RATED_TV_SERIES) }
+                )
+            }
+
+            item {
+                Spacer(Modifier.height(LargeDp))
+            }
         }
     }
 }

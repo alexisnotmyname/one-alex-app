@@ -9,4 +9,5 @@ interface TodoListRepository {
     suspend fun update(todoEntity: TodoItem)
     suspend fun updateTodoItems(todoList: List<TodoItem>)
     suspend fun delete(todoEntity: TodoItem)
+    suspend fun search(searchQuery: String): Flow<List<TodoItem>>
 }

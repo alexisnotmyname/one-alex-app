@@ -19,10 +19,9 @@ fun NavGraphBuilder.moviesScreen(
     navigateToMovieDetails: (BaseContent) -> Unit = {},
     navigateToPagedList: (Category) -> Unit = {}) {
     composable<MoviesRoute>(
-        exitTransition = { slideOutHorizontally() },
         popEnterTransition = { slideInHorizontally() }
     ) {
-        MoviesScreen(
+        MoviesScreenRoot(
             navigateToMovieDetails = navigateToMovieDetails,
             navigateToPagedList = navigateToPagedList
         )

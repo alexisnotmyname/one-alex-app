@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexc.ph.domain.GetMovieAndTvSeriesUseCase
 import com.alexc.ph.domain.model.CombinedMoviesAndSeries
-import com.alexc.ph.domain.model.Result
+import com.alexc.ph.domain.util.Result
 import com.alexc.ph.onealexapp.ui.movies.MoviesUiState.Error
 import com.alexc.ph.onealexapp.ui.movies.MoviesUiState.Loading
 import com.alexc.ph.onealexapp.ui.movies.MoviesUiState.Success

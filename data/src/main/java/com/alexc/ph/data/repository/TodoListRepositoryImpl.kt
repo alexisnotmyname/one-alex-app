@@ -32,4 +32,10 @@ class TodoListRepositoryImpl(
     override suspend fun delete(todoEntity: TodoItem) {
         todoListDao.deleteTodo(todoEntity.toTodoEntity())
     }
+
+    override suspend fun search(searchQuery: String): Flow<List<TodoItem>> {
+        return todoListDao.searchTodos(searchQuery).map {
+            it.map { todoEntity -> todoEntity.toTodoItem() }
+        }
+    }
 }

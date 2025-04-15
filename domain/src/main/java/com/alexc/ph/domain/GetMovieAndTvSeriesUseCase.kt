@@ -3,7 +3,7 @@ package com.alexc.ph.domain
 import com.alexc.ph.domain.model.CombinedMovies
 import com.alexc.ph.domain.model.CombinedMoviesAndSeries
 import com.alexc.ph.domain.model.CombinedTvSeries
-import com.alexc.ph.domain.model.Result
+import com.alexc.ph.domain.util.Result
 import com.alexc.ph.domain.repository.MoviesRepository
 import com.alexc.ph.domain.repository.TvSeriesRepository
 import kotlinx.coroutines.flow.Flow
