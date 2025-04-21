@@ -29,7 +29,14 @@ class MovieDetailsViewModel(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), _state.value)
 
+    fun onAction(action: MovieDetailsAction) {
+        when (action) {
+            MovieDetailsAction.OnRetryClicked -> getContentDetails()
+        }
+    }
+
     private fun getContentDetails() {
+        _state.update { it.copy(isLoading = true) }
         getMovieDetailsUseCase(id, contentType)
             .map { result ->
                 _state.update {

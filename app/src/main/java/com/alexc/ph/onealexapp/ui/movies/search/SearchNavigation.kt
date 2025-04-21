@@ -1,0 +1,23 @@
+package com.alexc.ph.onealexapp.ui.movies.search
+
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.composable
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object SearchScreenRoute
+
+fun NavController.navigateToSearch(navOptions: NavOptions? = null) =
+    navigate(route = SearchScreenRoute, navOptions)
+
+fun NavGraphBuilder.searchScreen(
+    navigateBack: () -> Unit,
+) {
+    composable<SearchScreenRoute> {
+        SearchScreenRoot(
+            navigateBack = navigateBack,
+        )
+    }
+}

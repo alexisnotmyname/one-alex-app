@@ -1,5 +1,5 @@
 package com.alexc.ph.onealexapp.ui.movies
 
-interface MoviesAction {
+sealed interface MoviesAction {
     data object OnRetryClicked : MoviesAction
 }

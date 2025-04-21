@@ -80,7 +80,7 @@ fun MovieDetailsScreenRoot(
         navigateBack = navigateBack,
         onWatchClick = onWatchClick,
         onRetry = {
-
+            viewModel.onAction(MovieDetailsAction.OnRetryClicked)
         }
     )
 }
@@ -119,7 +119,7 @@ fun MovieDetailsScreen(
                 LoadingScreen()
             } else {
                 when {
-                    state.error.isNotBlank() || state.contentItem == null -> GenericErrorScreen(onRetry = {})
+                    state.error.isNotBlank() || state.contentItem == null -> GenericErrorScreen(onRetry = onRetry)
                     else -> {
                         val content = state.contentItem
                         val (backdropPath, posterPath, title) = when(content) {
@@ -185,23 +185,6 @@ fun DetailsContent(
                     .clip(shapes.small),
             )
             Spacer(modifier = Modifier.height(8.dp))
-//            Button(
-//                onClick = { onWatchClick(title) },
-//                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(horizontal = 16.dp)
-//            ) {
-//                Text(
-//                    text = "Watch $title",
-//                    style = MaterialTheme.typography.titleMedium.copy(
-//                        fontWeight = FontWeight.Bold
-//                    ),
-//                    color = MaterialTheme.colorScheme.onPrimary,
-//                    textAlign = TextAlign.Center,
-//                )
-//            }
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

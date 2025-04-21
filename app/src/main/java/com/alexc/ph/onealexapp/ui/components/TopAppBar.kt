@@ -1,6 +1,5 @@
 package com.alexc.ph.onealexapp.ui.components
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,10 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,34 +28,16 @@ import com.alexc.ph.onealexapp.R
 @Composable
 fun OneAlexTopAppBar(
     modifier: Modifier = Modifier,
-    @StringRes titleRes: Int,
-    searchQuery: String,
-    onSearchQueryChange: (String) -> Unit,
-    onImeSearch: () -> Unit,
+    isSearch: Boolean = false,
+    onNavigationClick: () -> Unit,
+    titleContent: @Composable () -> Unit,
 ) {
-    var isSearch by rememberSaveable { mutableStateOf(false) }
     CenterAlignedTopAppBar(
         title = {
-            if(isSearch) {
-                SearchTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    value = searchQuery,
-                    onSearchQueryChange = onSearchQueryChange,
-                    onImeSearch = onImeSearch
-                )
-            } else {
-                Text(text = stringResource(id = titleRes))
-            }
+            titleContent()
         },
         navigationIcon = {
-            IconButton(onClick = {
-                isSearch = !isSearch
-                if(!isSearch) {
-                    onSearchQueryChange("")
-                }
-            }) {
+            IconButton(onClick = onNavigationClick) {
                 Icon(
                     imageVector = if(isSearch) OneAlexAppIcons.Back else OneAlexAppIcons.Search,
                     contentDescription = stringResource(if(isSearch) R.string.cd_back else R.string.search),
@@ -98,13 +75,29 @@ fun GenericTopAppBar(
 
 @Preview(showBackground = true)
 @Composable
-fun OneAlexTopAppBarPreview() {
+fun OneAlexTopAppBarTitlePreview() {
     OneAlexTopAppBar(
-        titleRes = R.string.app_name,
-        searchQuery = "",
-        onSearchQueryChange = {},
-        onImeSearch = {}
-    )
+        onNavigationClick = {}
+    ) {
+        Text(text = stringResource(R.string.todo))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun OneAlexTopAppBarSearchPreview() {
+    OneAlexTopAppBar(
+        onNavigationClick = {}
+    ) {
+        SearchTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            value = "",
+            onSearchQueryChange = {},
+            onImeSearch = {}
+        )
+    }
 }
 
 @Preview(showBackground = true)

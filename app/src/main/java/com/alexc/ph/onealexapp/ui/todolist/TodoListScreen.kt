@@ -12,11 +12,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alexc.ph.domain.model.TodoItem
 import com.alexc.ph.onealexapp.R
 import com.alexc.ph.onealexapp.ui.components.OneAlexTopAppBar
+import com.alexc.ph.onealexapp.ui.components.SearchTextField
 import com.alexc.ph.onealexapp.ui.todolist.components.DraggableItem
 import com.alexc.ph.onealexapp.ui.todolist.components.NewTaskScreen
 import com.alexc.ph.onealexapp.ui.todolist.components.TodoInputBar
@@ -72,16 +75,33 @@ fun TodoListScreen(
     Column(
         modifier = modifier
     ) {
+        var isSearch by remember { mutableStateOf(false) }
         OneAlexTopAppBar(
-            titleRes = R.string.todo,
-            searchQuery = state.searchQuery,
-            onSearchQueryChange = { query ->
-                onAction(TodoListAction.OnSearchQueryChange(query))
-            },
-            onImeSearch = {
-                focusManager.clearFocus()
+            isSearch = isSearch,
+            onNavigationClick = {
+                isSearch = !isSearch
+                if(!isSearch) {
+                    onAction(TodoListAction.OnSearchQueryChange(""))
+                }
             }
-        )
+        ) {
+            if(isSearch) {
+                SearchTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    value = state.searchQuery,
+                    onSearchQueryChange = { query ->
+                        onAction(TodoListAction.OnSearchQueryChange(query))
+                    },
+                    onImeSearch = {
+                        focusManager.clearFocus()
+                    }
+                )
+            } else {
+                Text(text = stringResource(R.string.todo))
+            }
+        }
         Box(
             modifier = Modifier
                 .fillMaxSize()

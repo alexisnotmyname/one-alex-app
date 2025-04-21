@@ -16,13 +16,16 @@ fun NavController.navigateToMovies(navOptions: NavOptions) =
 
 fun NavGraphBuilder.moviesScreen(
     navigateToMovieDetails: (BaseContent) -> Unit = {},
-    navigateToPagedList: (Category) -> Unit = {}) {
+    navigateToPagedList: (Category) -> Unit = {},
+    navigateToSearch: () -> Unit = {}
+) {
     composable<MoviesRoute>(
         popEnterTransition = { slideInHorizontally() }
     ) {
         MoviesScreenRoot(
             navigateToMovieDetails = navigateToMovieDetails,
-            navigateToPagedList = navigateToPagedList
+            navigateToPagedList = navigateToPagedList,
+            navigateToSearch = navigateToSearch
         )
     }
 }

@@ -31,7 +31,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alexc.ph.domain.model.BaseContent
 import com.alexc.ph.domain.model.Category
 import com.alexc.ph.domain.model.AllMovies
-import com.alexc.ph.domain.model.CombinedMoviesAndTvSeries
 import com.alexc.ph.domain.model.AllTvSeries
 import com.alexc.ph.domain.model.Movie
 import com.alexc.ph.domain.model.TvSeries
@@ -53,7 +52,8 @@ import org.koin.androidx.compose.koinViewModel
 fun MoviesScreenRoot(
     moviesMoviesViewModel: MoviesViewModel = koinViewModel(),
     navigateToMovieDetails: (BaseContent) -> Unit = {},
-    navigateToPagedList: (Category) -> Unit = {}
+    navigateToPagedList: (Category) -> Unit = {},
+    navigateToSearch: () -> Unit = {}
 ) {
     val state by moviesMoviesViewModel.state.collectAsStateWithLifecycle()
     MoviesScreen(
@@ -62,8 +62,9 @@ fun MoviesScreenRoot(
         navigateToMovieDetails = navigateToMovieDetails,
         onCategoryClicked = navigateToPagedList,
         onRetryClicked = {
-                moviesMoviesViewModel.onAction(MoviesAction.OnRetryClicked)
-        }
+            moviesMoviesViewModel.onAction(MoviesAction.OnRetryClicked)
+        },
+        onSearchClick = navigateToSearch
     )
 }
 
@@ -73,19 +74,16 @@ fun MoviesScreen(
     state: MoviesState,
     navigateToMovieDetails: (BaseContent) -> Unit,
     onCategoryClicked: (Category) -> Unit,
-    onRetryClicked: () -> Unit
+    onRetryClicked: () -> Unit,
+    onSearchClick: () -> Unit,
 ) {
-    Column {
+    Column(modifier = modifier) {
         OneAlexTopAppBar(
-            titleRes = R.string.movies,
-            searchQuery = "",
-            onSearchQueryChange = { query ->
-
-            },
-            onImeSearch = {
-
-            }
-        )
+            isSearch = false,
+            onNavigationClick = onSearchClick
+        ) {
+            Text(text = stringResource(R.string.movies))
+        }
 
         if(state.isLoading) {
             LoadingScreen()
@@ -96,7 +94,7 @@ fun MoviesScreen(
                 }
                 else -> {
                     MovieList(
-                        modifier = modifier,
+                        modifier = Modifier,
                         state = state,
                         navigateToMovieDetails = navigateToMovieDetails,
                         onCategoryClicked = onCategoryClicked
@@ -308,7 +306,8 @@ fun MovieScreenPreview() {
         state = state,
         navigateToMovieDetails = {},
         onCategoryClicked = {},
-        onRetryClicked = {}
+        onRetryClicked = {},
+        onSearchClick = {}
     )
 }
 

@@ -27,6 +27,7 @@ import com.alexc.ph.onealexapp.ui.components.GradientBackground
 import com.alexc.ph.onealexapp.ui.movies.details.movieDetailsScreen
 import com.alexc.ph.onealexapp.ui.movies.moviesScreen
 import com.alexc.ph.onealexapp.ui.movies.paged.pagedListScreen
+import com.alexc.ph.onealexapp.ui.movies.search.searchScreen
 import com.alexc.ph.onealexapp.ui.navigation.OneAlexNavigationSuiteScaffold
 import com.alexc.ph.onealexapp.ui.theme.LocalGradientColors
 import com.alexc.ph.onealexapp.ui.todolist.TodoListRoute
@@ -103,7 +104,8 @@ fun OneAlexApp(
                             todoListScreen()
                             moviesScreen(
                                 navigateToMovieDetails = appState::navigateToMovieDetails,
-                                navigateToPagedList = appState::navigateToPagedList
+                                navigateToPagedList = appState::navigateToPagedList,
+                                navigateToSearch = appState::navigateToSearch
                             )
                             movieDetailsScreen(
                                 navigateBack = appState::navigateBack,
@@ -112,6 +114,9 @@ fun OneAlexApp(
                             pagedListScreen(
                                 navigateBack = appState::navigateBack,
                                 navigateToMovieDetails = appState::navigateToMovieDetails
+                            )
+                            searchScreen(
+                                navigateBack = appState::navigateBack
                             )
                         }
                     }
