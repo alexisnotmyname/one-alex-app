@@ -55,14 +55,13 @@ fun ContentImage(
     ) {
 
         when (imagePainterState) {
-            is AsyncImagePainter.State.Loading,
-            is AsyncImagePainter.State.Error -> {
+            is AsyncImagePainter.State.Loading -> {
                 CircularProgressIndicator(modifier = Modifier)
             }
             else -> {
                 Box(
                     modifier = Modifier
-                        .background(Color.Transparent)
+                        .background(MaterialTheme.colorScheme.primaryContainer)
                         .fillMaxSize()
 
                 )

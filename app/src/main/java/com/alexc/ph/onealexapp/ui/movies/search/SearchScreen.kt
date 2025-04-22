@@ -1,7 +1,8 @@
 package com.alexc.ph.onealexapp.ui.movies.search
 
-import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alexc.ph.domain.model.BaseContent
+import com.alexc.ph.domain.model.ContentType
 import com.alexc.ph.onealexapp.ui.components.OneAlexTopAppBar
 import com.alexc.ph.onealexapp.ui.components.SearchTextField
 import com.alexc.ph.onealexapp.ui.movies.search.components.SearchItem
@@ -21,7 +24,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SearchScreenRoot(
     searchViewModel: SearchViewModel = koinViewModel(),
-    navigateBack: () -> Unit = {}
+    navigateBack: () -> Unit,
+    navigateToDetails: (BaseContent) -> Unit
 ) {
     val state by searchViewModel.state.collectAsStateWithLifecycle()
     SearchScreen(
@@ -30,6 +34,11 @@ fun SearchScreenRoot(
         navigateBack = navigateBack,
         onSearchQueryChange = { query ->
             searchViewModel.onSearchQueryChange(query)
+        },
+        onClickItem = { searchItem ->
+            if(searchItem.contentType != ContentType.PERSON) {
+                navigateToDetails(searchItem)
+            }
         }
     )
 }
@@ -39,7 +48,8 @@ fun SearchScreen(
     modifier: Modifier = Modifier,
     state: SearchState,
     navigateBack: () -> Unit,
-    onSearchQueryChange: (String) -> Unit
+    onSearchQueryChange: (String) -> Unit,
+    onClickItem: (BaseContent) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -60,13 +70,15 @@ fun SearchScreen(
             )
         }
         LazyColumn(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(state.searchResults, key = { it.id }) {
                 SearchItem(
                     searchItem = it,
-                    onSearchItemClick = {
-
+                    onSearchItemClick = { searchItem ->
+                        onClickItem(searchItem)
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -81,6 +93,7 @@ fun SearchScreenPreview() {
     SearchScreen(
         state = SearchState(),
         navigateBack = {},
-        onSearchQueryChange = {}
+        onSearchQueryChange = {},
+        onClickItem = {}
     )
 }

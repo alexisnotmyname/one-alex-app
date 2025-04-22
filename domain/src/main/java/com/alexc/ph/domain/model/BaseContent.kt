@@ -10,8 +10,9 @@ abstract class BaseContent {
 }
 
 enum class ContentType(val value: String){
-    MOVIE("movie"),
-    TV("tv")
+    MOVIE("Movie"),
+    TV("TV Series"),
+    PERSON("Actor")
 }
 
 enum class Category(val value: String) {

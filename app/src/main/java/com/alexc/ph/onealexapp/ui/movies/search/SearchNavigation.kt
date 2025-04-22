@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import com.alexc.ph.domain.model.BaseContent
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,10 +15,12 @@ fun NavController.navigateToSearch(navOptions: NavOptions? = null) =
 
 fun NavGraphBuilder.searchScreen(
     navigateBack: () -> Unit,
+    navigateToDetails: (BaseContent) -> Unit
 ) {
     composable<SearchScreenRoute> {
         SearchScreenRoot(
             navigateBack = navigateBack,
+            navigateToDetails = navigateToDetails
         )
     }
 }

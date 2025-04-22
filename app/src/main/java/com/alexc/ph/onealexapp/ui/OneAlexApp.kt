@@ -116,7 +116,8 @@ fun OneAlexApp(
                                 navigateToMovieDetails = appState::navigateToMovieDetails
                             )
                             searchScreen(
-                                navigateBack = appState::navigateBack
+                                navigateBack = appState::navigateBack,
+                                navigateToDetails = appState::navigateToMovieDetails
                             )
                         }
                     }

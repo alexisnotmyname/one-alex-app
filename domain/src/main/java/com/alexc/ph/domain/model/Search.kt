@@ -1,19 +1,20 @@
 package com.alexc.ph.domain.model
 
 data class Search(
-    val id: Int,
+    override val id: Int,
+    override val title: String = "",
+    override val posterPath: String = "",
+    override val backdropPath: String = "",
+    override val contentType: ContentType,
+    override val genres: List<Genre> = emptyList(),
     val name: String = "",
-    val title: String = "",
     val originalName: String = "",
     val overview: String = "",
-    val posterPath: String = "",
-    val backdropPath: String = "",
-    val mediaType: String = "",
+    val profilePath: String = "",
     val adult: Boolean = false,
     val originalLanguage: String = "",
-    val genres: List<Genre> = emptyList(),
     val popularity: Double = .0,
     val firstAirDate: String = "",
     val voteAverage: Double = .0,
-    val voteCount: Int = 0
-)
+    val voteCount: Int = 0,
+): BaseContent()

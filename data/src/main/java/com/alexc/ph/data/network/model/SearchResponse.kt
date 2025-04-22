@@ -1,5 +1,6 @@
 package com.alexc.ph.data.network.model
 
+import com.alexc.ph.domain.model.ContentType.*
 import com.alexc.ph.domain.model.Search
 import com.alexc.ph.domain.util.backdropImageUrl
 import com.alexc.ph.domain.util.posterImageUrl
@@ -15,10 +16,10 @@ data class SearchResponse(
     val overview: String = "",
     @SerialName("poster_path") val posterPath: String = "",
     @SerialName("backdrop_path") val backdropPath: String = "",
-    @SerialName("media_type") val mediaType: String,
+    @SerialName("profile_path") val profilePath: String = "",
+    @SerialName("media_type") val mediaTypeResponse: MediaTypeResponse = MediaTypeResponse.MOVIE,
     val adult: Boolean = false,
     @SerialName("original_language") val originalLanguage: String = "",
-    @SerialName("genres") val genres: List<GenreResponse> = emptyList(),
     val popularity: Double = .0,
     @SerialName("first_air_date") val firstAirDate: String = "",
     @SerialName("vote_average") val voteAverage: Double = .0,
@@ -33,12 +34,17 @@ fun SearchResponse.toSearch() = Search(
     overview = this.overview,
     posterPath = this.posterPath.posterImageUrl(),
     backdropPath = this.backdropPath.backdropImageUrl(),
-    mediaType = this.mediaType,
+    profilePath = this.profilePath.posterImageUrl(),
+    contentType = when(this.mediaTypeResponse) {
+        MediaTypeResponse.TV -> TV
+        MediaTypeResponse.MOVIE -> MOVIE
+        MediaTypeResponse.PERSON -> PERSON
+    },
     adult = this.adult,
     originalLanguage = this.originalLanguage,
-    genres = this.genres.map { it.toGenre() },
     popularity = this.popularity,
     firstAirDate = this.firstAirDate,
     voteAverage = this.voteAverage,
-    voteCount = this.voteCount
+    voteCount = this.voteCount,
+    genres = emptyList(),
 )

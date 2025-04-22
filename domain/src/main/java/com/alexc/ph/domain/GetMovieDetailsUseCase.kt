@@ -31,6 +31,7 @@ class GetMovieDetailsUseCase(
                     }
                 }
             }
+            else -> throw IllegalArgumentException("Invalid content type")
         }
     }
 }
