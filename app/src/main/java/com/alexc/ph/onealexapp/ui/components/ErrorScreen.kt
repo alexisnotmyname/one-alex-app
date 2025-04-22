@@ -18,8 +18,8 @@ import com.alexc.ph.onealexapp.ui.theme.OneAlexAppTheme
 
 @Composable
 fun GenericErrorScreen(
-    onRetry: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onRetry: () -> Unit,
 ) {
     Surface(modifier = modifier) {
         Column(

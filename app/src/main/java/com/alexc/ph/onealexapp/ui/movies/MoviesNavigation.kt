@@ -1,7 +1,6 @@
 package com.alexc.ph.onealexapp.ui.movies
 
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -17,14 +16,16 @@ fun NavController.navigateToMovies(navOptions: NavOptions) =
 
 fun NavGraphBuilder.moviesScreen(
     navigateToMovieDetails: (BaseContent) -> Unit = {},
-    navigateToPagedList: (Category) -> Unit = {}) {
+    navigateToPagedList: (Category) -> Unit = {},
+    navigateToSearch: () -> Unit = {}
+) {
     composable<MoviesRoute>(
-        exitTransition = { slideOutHorizontally() },
         popEnterTransition = { slideInHorizontally() }
     ) {
-        MoviesScreen(
+        MoviesScreenRoot(
             navigateToMovieDetails = navigateToMovieDetails,
-            navigateToPagedList = navigateToPagedList
+            navigateToPagedList = navigateToPagedList,
+            navigateToSearch = navigateToSearch
         )
     }
 }

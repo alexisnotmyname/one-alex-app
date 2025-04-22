@@ -3,7 +3,7 @@ package com.alexc.ph.domain
 
 import com.alexc.ph.domain.model.ContentItem
 import com.alexc.ph.domain.model.ContentType
-import com.alexc.ph.domain.model.Result
+import com.alexc.ph.domain.util.Result
 import com.alexc.ph.domain.repository.MoviesRepository
 import com.alexc.ph.domain.repository.TvSeriesRepository
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +19,6 @@ class GetMovieDetailsUseCase(
                 moviesRepository.getMovie(id).map { result ->
                     when(result) {
                         is Result.Error -> Result.Error(result.exception)
-                        Result.Loading -> Result.Loading
                         is Result.Success -> Result.Success(ContentItem.MovieItem(result.data))
                     }
                 }
@@ -28,11 +27,11 @@ class GetMovieDetailsUseCase(
                 tvSeriesRepository.getTvSeries(id).map { result ->
                     when(result) {
                         is Result.Error -> Result.Error(result.exception)
-                        Result.Loading -> Result.Loading
                         is Result.Success -> Result.Success(ContentItem.TvSeriesItem(result.data))
                     }
                 }
             }
+            else -> throw IllegalArgumentException("Invalid content type")
         }
     }
 }

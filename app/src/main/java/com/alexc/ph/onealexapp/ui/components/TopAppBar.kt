@@ -1,8 +1,8 @@
 package com.alexc.ph.onealexapp.ui.components
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Check
@@ -12,39 +12,40 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.alexc.ph.onealexapp.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OneAlexTopAppBar(
     modifier: Modifier = Modifier,
-    @StringRes titleRes: Int,
-    navigationIcon: ImageVector,
-    navigationIconContentDescription: String,
-    colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
-    onNavigationClick: () -> Unit = {},
+    isSearch: Boolean = false,
+    onNavigationClick: () -> Unit,
+    titleContent: @Composable () -> Unit,
 ) {
     CenterAlignedTopAppBar(
-        title = { Text(text = stringResource(id = titleRes)) },
+        title = {
+            titleContent()
+        },
         navigationIcon = {
             IconButton(onClick = onNavigationClick) {
                 Icon(
-                    imageVector = navigationIcon,
-                    contentDescription = navigationIconContentDescription,
+                    imageVector = if(isSearch) OneAlexAppIcons.Back else OneAlexAppIcons.Search,
+                    contentDescription = stringResource(if(isSearch) R.string.cd_back else R.string.search),
                     tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
         },
-        colors = colors,
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
         modifier = modifier
     )
 }
@@ -69,6 +70,33 @@ fun GenericTopAppBar(
             fontWeight = FontWeight.Bold
         )
         action()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun OneAlexTopAppBarTitlePreview() {
+    OneAlexTopAppBar(
+        onNavigationClick = {}
+    ) {
+        Text(text = stringResource(R.string.todo))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun OneAlexTopAppBarSearchPreview() {
+    OneAlexTopAppBar(
+        onNavigationClick = {}
+    ) {
+        SearchTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            value = "",
+            onSearchQueryChange = {},
+            onImeSearch = {}
+        )
     }
 }
 

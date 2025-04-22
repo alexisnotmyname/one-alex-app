@@ -2,7 +2,7 @@ package com.alexc.ph.domain.repository
 
 import androidx.paging.PagingData
 import com.alexc.ph.domain.model.Movie
-import com.alexc.ph.domain.model.Result
+import com.alexc.ph.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 

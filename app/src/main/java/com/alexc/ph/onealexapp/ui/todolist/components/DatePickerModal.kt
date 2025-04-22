@@ -24,16 +24,15 @@ import com.alexc.ph.onealexapp.ui.util.convertMillisToDate
 
 @Composable
 fun DateAssistChip(
-    modifier: Modifier = Modifier,
-    date: Long,
+    date: Long?,
     onDateSelected: (Long?) -> Unit = {},
 ) {
-    var selectedDate by remember { mutableLongStateOf(date) }
+    var selectedDate by remember { mutableStateOf(date) }
     var showModal by remember { mutableStateOf(false) }
 
     AssistChip(
         onClick = { showModal = true },
-        label = { Text(convertMillisToDate(selectedDate)) },
+        label = { Text(selectedDate?.convertMillisToDate() ?: "Set Due Date") },
         leadingIcon = {
             Icon(
                 Icons.Filled.DateRange,

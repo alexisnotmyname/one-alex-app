@@ -3,53 +3,60 @@ package com.alexc.ph.onealexapp.ui.movies
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexc.ph.domain.GetMovieAndTvSeriesUseCase
-import com.alexc.ph.domain.model.CombinedMoviesAndSeries
-import com.alexc.ph.domain.model.Result
-import com.alexc.ph.onealexapp.ui.movies.MoviesUiState.Error
-import com.alexc.ph.onealexapp.ui.movies.MoviesUiState.Loading
-import com.alexc.ph.onealexapp.ui.movies.MoviesUiState.Success
-import kotlinx.coroutines.flow.Flow
+import com.alexc.ph.domain.model.AllMovies
+import com.alexc.ph.domain.model.AllTvSeries
+import com.alexc.ph.domain.util.Result
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 
 
 class MoviesViewModel(
-    getMovieAndTvSeriesUseCase: GetMovieAndTvSeriesUseCase,
-): ViewModel() {
+    private val getMovieAndTvSeriesUseCase: GetMovieAndTvSeriesUseCase,
+) : ViewModel() {
 
-    val moviesUiState: StateFlow<MoviesUiState> = moviesAndTvSeriesUiState(
-        getMovieAndTvSeriesUseCase = getMovieAndTvSeriesUseCase
-    )
-    .catch { Error(it) }
-    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), Loading)
-
-    fun retry() {
-
-    }
-}
-
-private fun moviesAndTvSeriesUiState(
-    page: Int = 1,
-    getMovieAndTvSeriesUseCase: GetMovieAndTvSeriesUseCase,
-): Flow<MoviesUiState> {
-    return getMovieAndTvSeriesUseCase("en-US", page)
-        .map { result ->
-            when(result) {
-                is Result.Loading -> Loading
-                is Result.Success -> Success(content = result.data)
-                is Result.Error -> Error(result.exception)
-            }
+    private val _state = MutableStateFlow(MoviesState())
+    val state = _state
+        .onStart {
+            getMoviesAndTvSeries()
         }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), _state.value)
+
+    fun onAction(action: MoviesAction) {
+        when (action) {
+            MoviesAction.OnRetryClicked -> getMoviesAndTvSeries()
+        }
+    }
+
+    private fun getMoviesAndTvSeries() {
+        _state.update { it.copy(isLoading = true) }
+        getMovieAndTvSeriesUseCase("en-US", 1)
+            .map { result ->
+                _state.update {
+                    when (result) {
+                        is Result.Error -> it.copy(
+                            error = result.exception.message ?: "Unknown error",
+                            isLoading = false,
+                            movies = AllMovies(popular = emptyList(), nowPlaying = emptyList()),
+                            tvSeries = AllTvSeries(popular = emptyList(), topRated = emptyList())
+                        )
+                        is Result.Success -> it.copy(
+                            error = "",
+                            isLoading = false,
+                            movies = result.data.movies,
+                            tvSeries = result.data.tvSeries,
+                        )
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
 }
 
 
-sealed interface MoviesUiState {
-    object Loading : MoviesUiState
-    data class Error(val throwable: Throwable) : MoviesUiState
-    data class Success(
-        val content: CombinedMoviesAndSeries
-    ) : MoviesUiState
-}
+

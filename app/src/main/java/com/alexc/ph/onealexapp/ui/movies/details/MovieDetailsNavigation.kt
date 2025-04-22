@@ -27,7 +27,7 @@ fun NavGraphBuilder.movieDetailsScreen(
             initialOffset
         } }
     ) {
-        MovieDetailsScreen(
+        MovieDetailsScreenRoot(
             navigateBack = navigateBack,
             onWatchClick = onWatchClick
         )

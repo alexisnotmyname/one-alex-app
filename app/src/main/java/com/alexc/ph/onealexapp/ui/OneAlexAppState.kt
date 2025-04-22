@@ -14,6 +14,7 @@ import com.alexc.ph.domain.model.Category
 import com.alexc.ph.onealexapp.ui.movies.paged.navigateToPagedList
 import com.alexc.ph.onealexapp.ui.movies.details.navigateToMovieDetails
 import com.alexc.ph.onealexapp.ui.movies.navigateToMovies
+import com.alexc.ph.onealexapp.ui.movies.search.navigateToSearch
 import com.alexc.ph.onealexapp.ui.navigation.TopLevelDestination
 import com.alexc.ph.onealexapp.ui.todolist.navigateToTodoList
 
@@ -71,6 +72,10 @@ class OneAlexAppState(
 
     fun navigateToPagedList(category: Category) {
         navController.navigateToPagedList(category)
+    }
+
+    fun navigateToSearch() {
+        navController.navigateToSearch()
     }
 
     fun watch(title: String) {

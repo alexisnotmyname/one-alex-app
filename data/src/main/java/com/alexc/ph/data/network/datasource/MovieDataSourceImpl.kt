@@ -2,6 +2,7 @@ package com.alexc.ph.data.network.datasource
 
 import com.alexc.ph.data.network.model.MovieResponse
 import com.alexc.ph.data.network.model.ResponseDto
+import com.alexc.ph.data.network.model.SearchResponse
 import com.alexc.ph.data.network.model.TvSeriesResponse
 import com.alexc.ph.data.network.retrofit.MoviesRetrofit
 
@@ -19,4 +20,6 @@ class MovieDataSourceImpl(
     override suspend fun getTopRatedTvSeries(page: Int): ResponseDto<List<TvSeriesResponse>> = api.getTopRatedTvSeries(page = page)
 
     override suspend fun getPopularTvSeries(page: Int): ResponseDto<List<TvSeriesResponse>> = api.getPopularTvSeries(page = page)
+
+    override suspend fun search(query: String, page: Int): ResponseDto<List<SearchResponse>> = api.search(query = query, page = page)
 }

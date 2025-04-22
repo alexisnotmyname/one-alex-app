@@ -2,6 +2,7 @@ package com.alexc.ph.data.network.datasource
 
 import com.alexc.ph.data.network.model.MovieResponse
 import com.alexc.ph.data.network.model.ResponseDto
+import com.alexc.ph.data.network.model.SearchResponse
 import com.alexc.ph.data.network.model.TvSeriesResponse
 
 interface MovieDataSource {
@@ -11,4 +12,5 @@ interface MovieDataSource {
     suspend fun getPopularMovies(page: Int): ResponseDto<List<MovieResponse>>
     suspend fun getTopRatedTvSeries(page: Int): ResponseDto<List<TvSeriesResponse>>
     suspend fun getPopularTvSeries(page: Int): ResponseDto<List<TvSeriesResponse>>
+    suspend fun search(query: String, page: Int): ResponseDto<List<SearchResponse>>
 }

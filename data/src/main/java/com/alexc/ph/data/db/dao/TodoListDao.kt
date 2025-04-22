@@ -13,6 +13,9 @@ interface TodoListDao {
     @Query("SELECT * FROM todoentity order by `isDone` ASC, `order` ASC")
     fun getAllTodoList(): Flow<List<TodoEntity>>
 
+    @Query("SELECT * FROM todoentity WHERE title LIKE '%' || :query || '%' ORDER BY dateTimeCreated DESC")
+    fun searchTodos(query: String): Flow<List<TodoEntity>>
+
     @Insert
     suspend fun insertTodo(todo: TodoEntity)
 

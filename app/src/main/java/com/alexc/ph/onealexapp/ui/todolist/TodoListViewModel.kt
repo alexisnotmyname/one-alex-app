@@ -1,45 +1,56 @@
+@file:OptIn(FlowPreview::class)
+
 package com.alexc.ph.onealexapp.ui.todolist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alexc.ph.domain.model.TodoItem
 import com.alexc.ph.domain.repository.TodoListRepository
-import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Error
-import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Loading
-import com.alexc.ph.onealexapp.ui.todolist.TodoListUiState.Success
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TodoListViewModel(
     private val todoListRepository: TodoListRepository,
 ): ViewModel() {
 
-    private var _todoList = MutableStateFlow<List<TodoItem>>(emptyList())
+    private var searchJob: Job? = null
 
-    val uiState: StateFlow<TodoListUiState> = _todoList
-        .onStart { getTodoList() }
-        .map<List<TodoItem>, TodoListUiState>(::Success)
-        .catch { emit(Error(it)) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), Loading)
-
-    private fun getTodoList()  {
-        viewModelScope.launch {
-            todoListRepository.myTodoList.collect{
-                _todoList.value = it
-            }
+    private val _state = MutableStateFlow(TodoListState())
+    val state = _state
+        .onStart {
+            observeSearchQuery()
         }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000L),
+            _state.value
+        )
+
+    private fun getTodoList() {
+        todoListRepository.myTodoList
+            .onEach { todoList ->
+                _state.update {
+                    it.copy(todoList = todoList)
+                }
+            }
+            .launchIn(viewModelScope)
+
     }
 
     fun onAction(action: TodoListAction) {
         when(action) {
             is TodoListAction.OnAddTodo -> {
-                val newTodo = action.todo.copy(order = _todoList.value.size)
+                val newTodo = action.todo.copy(order = _state.value.todoList.lastIndex + 1)
                 viewModelScope.launch {
                     todoListRepository.add(newTodo)
                 }
@@ -62,30 +73,69 @@ class TodoListViewModel(
                 }
             }
             is TodoListAction.OnTodoItemDragged -> {
-                if(_todoList.value[action.fromIndex].isDone) return
-                val updatedList = _todoList.value.toMutableList().apply {
+                val todoList = _state.value.todoList
+                if(todoList[action.fromIndex].isDone || todoList.size <= 1) return
+                val updatedList = todoList.toMutableList().apply {
                     add(action.toIndex, removeAt(action.fromIndex))
                 }.mapIndexed { index, todoItem ->
                     todoItem.copy(order = index)
                 }
-                _todoList.value = updatedList
+
+                _state.update {
+                    it.copy(
+                        todoList = updatedList
+                    )
+                }
             }
             TodoListAction.OnTodoItemDraggedEnd -> {
                 viewModelScope.launch {
-                    todoListRepository.updateTodoItems(_todoList.value)
+                    todoListRepository.updateTodoItems(_state.value.todoList)
                 }
             }
             is TodoListAction.OnEditTodo -> {
                 viewModelScope.launch {
                     todoListRepository.update(action.todo)
+                    _state.update {
+                        it.copy(
+                            todoList = it.todoList
+                        )
+                    }
                 }
+            }
+
+            is TodoListAction.OnSearchQueryChange -> {
+                _state.update { it.copy(searchQuery = action.query) }
             }
         }
     }
-}
 
-sealed interface TodoListUiState {
-    object Loading : TodoListUiState
-    data class Error(val throwable: Throwable) : TodoListUiState
-    data class Success(val todoList: List<TodoItem>) : TodoListUiState
+    private fun observeSearchQuery() {
+        state
+            .map { it.searchQuery }
+            .distinctUntilChanged()
+            .debounce(300L)
+            .onEach { query ->
+                when{
+                    query.isBlank() -> {
+                        getTodoList()
+                    }
+                    query.length >= 2 -> {
+                        searchJob?.cancel()
+                        searchJob = searchTodoList(query)
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun searchTodoList(query: String) = viewModelScope.launch {
+        todoListRepository
+            .search(query)
+            .onEach { todoList ->
+                _state.update {
+                    it.copy(todoList = todoList)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
 }

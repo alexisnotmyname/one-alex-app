@@ -7,9 +7,11 @@ import com.alexc.ph.data.network.datasource.MovieDataSource
 import com.alexc.ph.data.network.datasource.MovieDataSourceImpl
 import com.alexc.ph.data.network.retrofit.MoviesRetrofit
 import com.alexc.ph.data.repository.MoviesRepositoryImpl
+import com.alexc.ph.data.repository.SearchRepositoryImpl
 import com.alexc.ph.data.repository.TodoListRepositoryImpl
 import com.alexc.ph.data.repository.TvSeriesRepositoryImpl
 import com.alexc.ph.domain.repository.MoviesRepository
+import com.alexc.ph.domain.repository.SearchRepository
 import com.alexc.ph.domain.repository.TodoListRepository
 import com.alexc.ph.domain.repository.TvSeriesRepository
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -77,5 +79,6 @@ val dataModule = module {
     single<TodoListRepository> { TodoListRepositoryImpl(get()) }
     single<MoviesRepository> { MoviesRepositoryImpl(get()) }
     single<TvSeriesRepository> { TvSeriesRepositoryImpl(get()) }
+    single<SearchRepository> { SearchRepositoryImpl(get()) }
 
 }

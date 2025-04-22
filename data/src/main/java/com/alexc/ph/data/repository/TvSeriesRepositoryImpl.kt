@@ -7,7 +7,7 @@ import com.alexc.ph.data.network.datasource.MovieDataSource
 import com.alexc.ph.data.network.model.toTvSeries
 import com.alexc.ph.data.repository.paging.PopularTvSeriesPagingSource
 import com.alexc.ph.data.repository.paging.TopRatedTvSeriesPagingSource
-import com.alexc.ph.domain.model.Result
+import com.alexc.ph.domain.util.Result
 import com.alexc.ph.domain.model.TvSeries
 import com.alexc.ph.domain.repository.TvSeriesRepository
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +17,6 @@ class TvSeriesRepositoryImpl(
     private val moviesDataSource: MovieDataSource
 ): TvSeriesRepository {
     override fun getTvSeries(id: Int): Flow<Result<TvSeries>> = flow {
-        emit(Result.Loading)
         try {
             emit(Result.Success(moviesDataSource.getTvSeries(id).toTvSeries()))
         } catch (e: Exception) {
@@ -26,7 +25,6 @@ class TvSeriesRepositoryImpl(
     }
 
     override fun getTopRated(language: String, page: Int): Flow<Result<List<TvSeries>>> = flow {
-        emit(Result.Loading)
         try {
             emit(Result.Success(moviesDataSource.getTopRatedTvSeries(page).results.map { it.toTvSeries() }))
         } catch (e: Exception) {
@@ -35,7 +33,6 @@ class TvSeriesRepositoryImpl(
     }
 
     override fun getPopular(language: String, page: Int): Flow<Result<List<TvSeries>>> = flow {
-        emit(Result.Loading)
         try {
             emit(Result.Success(moviesDataSource.getPopularTvSeries(page).results.map { it.toTvSeries() }))
         } catch (e: Exception) {

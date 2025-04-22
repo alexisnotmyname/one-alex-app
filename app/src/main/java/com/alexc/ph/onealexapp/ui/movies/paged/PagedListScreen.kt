@@ -44,7 +44,9 @@ fun PagedListScreen(
     val content = viewModel.moviesPaged.collectAsLazyPagingItems()
 
     when(pagedListUiState) {
-        is PagedListUiState.Error -> GenericErrorScreen()
+        is PagedListUiState.Error -> GenericErrorScreen(onRetry = {
+
+        })
         PagedListUiState.Loading -> LoadingScreen()
         is PagedListUiState.Success -> {
             val category = (pagedListUiState as  PagedListUiState.Success).category

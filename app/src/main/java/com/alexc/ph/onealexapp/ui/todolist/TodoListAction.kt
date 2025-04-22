@@ -10,4 +10,5 @@ sealed interface TodoListAction {
     data class OnTodoItemDragged(val fromIndex: Int, val toIndex: Int) : TodoListAction
     data class OnStoppedEditing(val todo: TodoItem, val newTitle: String) : TodoListAction
     data object OnTodoItemDraggedEnd : TodoListAction
+    data class OnSearchQueryChange(val query: String): TodoListAction
 }

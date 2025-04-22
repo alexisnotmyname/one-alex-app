@@ -52,17 +52,16 @@ fun ContentImage(
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
-    ){
+    ) {
 
         when (imagePainterState) {
-            is AsyncImagePainter.State.Loading,
-            is AsyncImagePainter.State.Error -> {
+            is AsyncImagePainter.State.Loading -> {
                 CircularProgressIndicator(modifier = Modifier)
             }
             else -> {
                 Box(
                     modifier = Modifier
-                        .background(Color.Gray)
+                        .background(MaterialTheme.colorScheme.primaryContainer)
                         .fillMaxSize()
 
                 )
@@ -73,7 +72,7 @@ fun ContentImage(
             painter = imageLoader,
             contentDescription = contentDescription,
             contentScale = contentScale,
-            modifier = modifier
+            modifier = Modifier.fillMaxSize()
         )
     }
 }

@@ -1,16 +1,16 @@
 package com.alexc.ph.domain.model
 
-class CombinedMoviesAndSeries(
-    val movies: CombinedMovies,
-    val tvSeries: CombinedTvSeries
+class CombinedMoviesAndTvSeries(
+    val movies: AllMovies,
+    val tvSeries: AllTvSeries
 )
 
-data class CombinedMovies(
+data class AllMovies(
     val nowPlaying: List<Movie>,
     val popular: List<Movie>
 )
 
-data class CombinedTvSeries(
+data class AllTvSeries(
     val topRated: List<TvSeries>,
     val popular: List<TvSeries>
 )

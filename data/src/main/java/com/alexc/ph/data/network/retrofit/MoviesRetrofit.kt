@@ -3,6 +3,7 @@ package com.alexc.ph.data.network.retrofit
 import com.alexc.ph.data.network.model.ConfigurationResponse
 import com.alexc.ph.data.network.model.MovieResponse
 import com.alexc.ph.data.network.model.ResponseDto
+import com.alexc.ph.data.network.model.SearchResponse
 import com.alexc.ph.data.network.model.TvSeriesResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -46,6 +47,14 @@ interface MoviesRetrofit {
         @Query("language") language: String = "en-US",
         @Query("page") page: Int
     ): ResponseDto<List<TvSeriesResponse>>
+
+    @GET("3/search/multi")
+    suspend fun search(
+        @Query("query") query: String,
+        @Query("include_adult") includeAdult: Boolean = false,
+        @Query("language") language: String = "en-US",
+        @Query("page") page: Int
+    ): ResponseDto<List<SearchResponse>>
 
     @GET("3/configuration")
     suspend fun getConfiguration(): Response<ConfigurationResponse>
