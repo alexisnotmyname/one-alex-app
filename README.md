@@ -5,8 +5,8 @@ One Alex app is a mutli-module demo Android app built using modern development p
 ## Features
 
 ### To-Do List
-- Add, complete, delete tasks.
-- Drag-and-drop to reorder tasks, similar to Google Keep.
+- Add, complete, delete todo tasks.
+- Drag-and-drop to reorder todo tasks.
 
 ### Movie & TV Series
 - View **Popular** and **Now Playing** Movies.
